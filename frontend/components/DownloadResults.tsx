@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Image, Video, Music, File, ExternalLink } from 'lucide-react';
+import { Download, Image, Video, Music, File, ExternalLink, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProgressiveImage from './ProgressiveImage';
 
@@ -11,8 +11,9 @@ interface DownloadResultsProps {
 const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderId }) => {
   if (!results) {
     return (
-      <div className="text-center py-6 text-gray-500 dark:text-gray-400">
-        Tidak ada hasil untuk ditampilkan.
+      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+        <Sparkles className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
+        <p className="text-lg font-medium">Tidak ada hasil untuk ditampilkan.</p>
       </div>
     );
   }
@@ -25,6 +26,13 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
       file: File
     };
     
+    const colors = {
+      video: 'from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 shadow-red-500/30 hover:shadow-red-500/40',
+      audio: 'from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-green-500/30 hover:shadow-green-500/40',
+      image: 'from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 shadow-blue-500/30 hover:shadow-blue-500/40',
+      file: 'from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 shadow-purple-500/30 hover:shadow-purple-500/40'
+    };
+    
     const Icon = icons[type];
     const displayName = index !== undefined ? `${filename} ${index + 1}` : filename;
 
@@ -32,34 +40,41 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
       <Button
         key={`${url}-${index}`}
         asChild
-        size="sm"
-        className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white shadow-sm hover:shadow-md transition-all duration-200 mb-2 mr-2"
+        className={`bg-gradient-to-r ${colors[type]} text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 mb-3 mr-3 rounded-2xl px-6 py-3 font-semibold`}
       >
         <a href={url} target="_blank" rel="noopener noreferrer" download={filename}>
-          <Icon className="w-3 h-3 mr-2" />
+          <Icon className="w-4 h-4 mr-2" />
           {displayName}
-          <ExternalLink className="w-3 h-3 ml-2" />
+          <ExternalLink className="w-4 h-4 ml-2" />
         </a>
       </Button>
     );
   };
 
   const renderThumbnail = (src: string, alt: string) => (
-    <ProgressiveImage 
-      src={src} 
-      alt={alt} 
-      className="w-full max-w-sm mx-auto rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 mb-3"
-    />
+    <div className="relative group">
+      <ProgressiveImage 
+        src={src} 
+        alt={alt} 
+        className="w-full max-w-md mx-auto rounded-2xl shadow-xl border-2 border-white/50 dark:border-gray-600/50 mb-4 group-hover:scale-105 transition-transform duration-300"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </div>
   );
 
   const renderTitle = (title: string) => (
-    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 text-center">{title}</h3>
+    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+      {title}
+    </h3>
   );
 
   const renderMetadata = (label: string, value: string) => (
-    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-      <span className="font-medium">{label}:</span> {value}
-    </p>
+    <div className="flex items-center justify-center space-x-2 mb-3">
+      <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300">
+        {label}:
+      </span>
+      <span className="text-sm font-semibold text-gray-900 dark:text-white">{value}</span>
+    </div>
   );
 
   // Handle TikTok with new API structure
@@ -67,7 +82,7 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
     if (downloaderId.includes('slide')) {
       if (results.result?.images) {
         return (
-          <div className="space-y-3">
+          <div className="space-y-6 text-center">
             {results.result.title && renderTitle(results.result.title)}
             {results.result.author && renderMetadata('Author', results.result.author)}
             <div className="flex flex-wrap justify-center">
@@ -83,7 +98,7 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
       if (results.result) {
         const { title, video, wm, audio, author } = results.result;
         return (
-          <div className="space-y-3">
+          <div className="space-y-6 text-center">
             {title && renderTitle(title)}
             {author && renderMetadata('Author', author)}
             <div className="flex flex-wrap justify-center">
@@ -100,12 +115,12 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
   if (downloaderId.includes('instagram')) {
     if (results.message && Array.isArray(results.message)) {
       return (
-        <div className="space-y-3">
+        <div className="space-y-6">
           {results.message.map((item: any, index: number) => (
-            <div key={index} className="border-b border-gray-200 dark:border-gray-600 pb-3 last:border-b-0">
+            <div key={index} className="border-b border-gray-200 dark:border-gray-600 pb-6 last:border-b-0 text-center">
               {item.thumbnail && renderThumbnail(item.thumbnail, `Instagram Media ${index + 1}`)}
               {item._url && (
-                <div className="text-center">
+                <div className="flex justify-center">
                   {renderDownloadLink(
                     item._url,
                     item.filename || `instagram_media_${index + 1}.${item._url.includes('.mp4') ? 'mp4' : 'jpg'}`,
@@ -124,7 +139,7 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
     if (results.result) {
       const { title, thumb, mp4, mp3 } = results.result;
       return (
-        <div className="space-y-3">
+        <div className="space-y-6 text-center">
           {title && renderTitle(title)}
           {thumb && renderThumbnail(thumb, 'YouTube Thumbnail')}
           <div className="flex flex-wrap justify-center">
@@ -140,10 +155,12 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
     if (results.result?.url) {
       const { filename, url, filesizeH } = results.result;
       return (
-        <div className="space-y-3 text-center">
+        <div className="space-y-6 text-center">
           {filename && renderTitle(filename)}
           {filesizeH && renderMetadata('Ukuran File', filesizeH)}
-          {renderDownloadLink(url, filename || 'mediafire_file', 'file')}
+          <div className="flex justify-center">
+            {renderDownloadLink(url, filename || 'mediafire_file', 'file')}
+          </div>
         </div>
       );
     }
@@ -153,12 +170,12 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
     if (results.result?.data) {
       const { title, artist, duration, thumbnail, url } = results.result.data;
       return (
-        <div className="space-y-3">
+        <div className="space-y-6 text-center">
           {title && renderTitle(title)}
           {artist?.name && renderMetadata('Artis', artist.name)}
           {duration && renderMetadata('Durasi', duration)}
           {thumbnail && renderThumbnail(thumbnail, 'Album Cover')}
-          <div className="text-center">
+          <div className="flex justify-center">
             {url && renderDownloadLink(url, `${title || 'spotify_track'}.mp3`, 'audio')}
           </div>
         </div>
@@ -170,29 +187,35 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
     if (results.result?.media_extended) {
       const { text, user_name, user_screen_name, media_extended } = results.result;
       return (
-        <div className="space-y-3">
+        <div className="space-y-6 text-center">
           {text && renderTitle(text)}
           {user_name && renderMetadata('Oleh', `${user_name} (@${user_screen_name})`)}
           <div className="flex flex-wrap justify-center">
             {media_extended.map((item: any, index: number) => {
               if (item.thumbnail_url) {
                 return (
-                  <div key={index} className="w-full mb-3">
+                  <div key={index} className="w-full mb-6">
                     {renderThumbnail(item.thumbnail_url, `Twitter Media ${index + 1}`)}
-                    {renderDownloadLink(
-                      item.url,
-                      `twitter_${item.type}_${index + 1}.${item.type === 'video' ? 'mp4' : 'jpg'}`,
-                      item.type === 'video' ? 'video' : 'image',
-                      index
-                    )}
+                    <div className="flex justify-center">
+                      {renderDownloadLink(
+                        item.url,
+                        `twitter_${item.type}_${index + 1}.${item.type === 'video' ? 'mp4' : 'jpg'}`,
+                        item.type === 'video' ? 'video' : 'image',
+                        index
+                      )}
+                    </div>
                   </div>
                 );
               }
-              return renderDownloadLink(
-                item.url,
-                `twitter_${item.type}_${index + 1}.${item.type === 'video' ? 'mp4' : 'jpg'}`,
-                item.type === 'video' ? 'video' : 'image',
-                index
+              return (
+                <div key={index} className="flex justify-center">
+                  {renderDownloadLink(
+                    item.url,
+                    `twitter_${item.type}_${index + 1}.${item.type === 'video' ? 'mp4' : 'jpg'}`,
+                    item.type === 'video' ? 'video' : 'image',
+                    index
+                  )}
+                </div>
               );
             })}
           </div>
@@ -209,9 +232,9 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
       
       if (videoItem?._url) {
         return (
-          <div className="space-y-3">
+          <div className="space-y-6 text-center">
             {videoItem.thumbnail && renderThumbnail(videoItem.thumbnail, 'Facebook Video')}
-            <div className="text-center">
+            <div className="flex justify-center">
               {renderDownloadLink(
                 videoItem._url,
                 videoItem.filename || 'facebook_video.mp4',
@@ -228,7 +251,7 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
     if (results.result) {
       const { image_urls, video_urls } = results.result;
       return (
-        <div className="space-y-3">
+        <div className="space-y-6 text-center">
           <div className="flex flex-wrap justify-center">
             {image_urls?.map((url: string, index: number) =>
               renderDownloadLink(url, `threads_image_${index + 1}.jpg`, 'image', index)
@@ -265,10 +288,10 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
       }
 
       return (
-        <div className="space-y-3">
+        <div className="space-y-6 text-center">
           {pin.title && renderTitle(pin.title)}
           {pin.image && renderThumbnail(pin.image, 'Pinterest Media')}
-          <div className="text-center">
+          <div className="flex justify-center">
             {downloadUrl && renderDownloadLink(downloadUrl, filename, type)}
           </div>
         </div>
@@ -279,15 +302,17 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
   if (downloaderId.includes('terabox')) {
     if (results.result && Array.isArray(results.result)) {
       return (
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 text-center">File Ditemukan:</h3>
+        <div className="space-y-6">
+          <h3 className="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+            File Ditemukan:
+          </h3>
           {results.result.map((item: any, index: number) => (
-            <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700">
+            <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-2xl p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 shadow-lg">
               {item.files?.map((file: any, fileIndex: number) => (
-                <div key={fileIndex} className="mb-3 last:mb-0">
-                  <h4 className="font-medium text-base mb-1 text-gray-900 dark:text-white">{file.filename || item.name}</h4>
+                <div key={fileIndex} className="mb-4 last:mb-0 text-center">
+                  <h4 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">{file.filename || item.name}</h4>
                   {file.size && renderMetadata('Ukuran', `${(parseInt(file.size) / (1024*1024)).toFixed(2)} MB`)}
-                  <div className="mt-2">
+                  <div className="mt-4 flex justify-center">
                     {renderDownloadLink(file.url, file.filename || item.name, 'file')}
                   </div>
                 </div>
@@ -301,21 +326,25 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
 
   if (downloaderId.includes('sfilemobi')) {
     return (
-      <div className="text-center py-6 text-gray-500 dark:text-gray-400">
-        <File className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
-        <p>API Sfilemobi tidak menyediakan tautan langsung saat ini.</p>
+      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+        <File className="w-16 h-16 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
+        <p className="text-lg font-medium mb-2">API Sfilemobi tidak tersedia</p>
+        <p className="text-sm">Silakan coba platform lain atau hubungi support.</p>
       </div>
     );
   }
 
   // Fallback for unknown result structure
   return (
-    <div className="text-center py-6 text-gray-500 dark:text-gray-400">
-      <File className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
-      <p>Tidak ada tautan unduhan valid ditemukan.</p>
-      <details className="mt-3 text-left">
-        <summary className="cursor-pointer text-sm text-gray-400 dark:text-gray-500">Debug Info</summary>
-        <pre className="mt-2 text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-auto">
+    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+      <File className="w-16 h-16 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
+      <p className="text-lg font-medium mb-2">Tidak ada tautan unduhan valid ditemukan</p>
+      <p className="text-sm mb-4">Silakan periksa URL atau coba lagi nanti.</p>
+      <details className="mt-4 text-left max-w-md mx-auto">
+        <summary className="cursor-pointer text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+          Debug Info (untuk developer)
+        </summary>
+        <pre className="mt-3 text-xs bg-gray-100 dark:bg-gray-800 p-3 rounded-xl overflow-auto border border-gray-200 dark:border-gray-700">
           {JSON.stringify(results, null, 2)}
         </pre>
       </details>
