@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
 import WhatsAppFab from './WhatsAppFab';
+import DownloadHistory from './DownloadHistory';
+import ErrorBoundary from './ErrorBoundary';
 import { platformData } from '../data/platforms';
+import { getUserPreferences } from '../utils/storage';
 
 export type ViewType = 'welcome' | 'platformList' | 'downloader';
 
@@ -24,56 +27,94 @@ export interface Downloader {
   instructions: string;
 }
 
-export default function AppInner() {
+const AppInner = React.memo(() => {
   const [currentView, setCurrentView] = useState<ViewType>('welcome');
   const [currentCategory, setCurrentCategory] = useState<Platform | null>(null);
   const [currentDownloader, setCurrentDownloader] = useState<Downloader | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
-  const handlePlatformSelect = (platform: Platform) => {
+  const preferences = getUserPreferences();
+
+  const sortedPlatforms = useMemo(() => {
+    const favorites = preferences.favoritePlatforms;
+    return [...platformData].sort((a, b) => {
+      const aIsFavorite = favorites.includes(a.id);
+      const bIsFavorite = favorites.includes(b.id);
+      
+      if (aIsFavorite && !bIsFavorite) return -1;
+      if (!aIsFavorite && bIsFavorite) return 1;
+      return 0;
+    });
+  }, [preferences.favoritePlatforms]);
+
+  const handlePlatformSelect = React.useCallback((platform: Platform) => {
     setCurrentCategory(platform);
     setCurrentView('platformList');
-  };
+  }, []);
 
-  const handleDownloaderSelect = (downloader: Downloader) => {
+  const handleDownloaderSelect = React.useCallback((downloader: Downloader) => {
     setCurrentDownloader(downloader);
     setCurrentView('downloader');
-  };
+  }, []);
 
-  const handleBackToHome = () => {
+  const handleBackToHome = React.useCallback(() => {
     setCurrentCategory(null);
     setCurrentDownloader(null);
     setCurrentView('welcome');
-  };
+  }, []);
 
-  const handleBackToPlatforms = () => {
+  const handleBackToPlatforms = React.useCallback(() => {
     setCurrentDownloader(null);
     setCurrentView('platformList');
-  };
+  }, []);
+
+  const handleShowHistory = React.useCallback(() => {
+    setShowHistory(true);
+  }, []);
+
+  const handleCloseHistory = React.useCallback(() => {
+    setShowHistory(false);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      <Header onHomeClick={handleBackToHome} />
+      <Header 
+        onHomeClick={handleBackToHome} 
+        onHistoryClick={handleShowHistory}
+      />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <Sidebar 
-            platforms={platformData}
-            currentCategory={currentCategory}
-            onPlatformSelect={handlePlatformSelect}
-          />
+          <ErrorBoundary>
+            <Sidebar 
+              platforms={sortedPlatforms}
+              currentCategory={currentCategory}
+              onPlatformSelect={handlePlatformSelect}
+            />
+          </ErrorBoundary>
           
-          <MainContent
-            currentView={currentView}
-            currentCategory={currentCategory}
-            currentDownloader={currentDownloader}
-            onDownloaderSelect={handleDownloaderSelect}
-            onBackToHome={handleBackToHome}
-            onBackToPlatforms={handleBackToPlatforms}
-          />
+          <ErrorBoundary>
+            <MainContent
+              currentView={currentView}
+              currentCategory={currentCategory}
+              currentDownloader={currentDownloader}
+              onDownloaderSelect={handleDownloaderSelect}
+              onBackToHome={handleBackToHome}
+              onBackToPlatforms={handleBackToPlatforms}
+            />
+          </ErrorBoundary>
         </div>
       </div>
 
       <WhatsAppFab />
+      
+      {showHistory && (
+        <DownloadHistory onClose={handleCloseHistory} />
+      )}
     </div>
   );
-}
+});
+
+AppInner.displayName = 'AppInner';
+
+export default AppInner;

@@ -1,13 +1,14 @@
 import React from 'react';
 import { Download, Image, Video, Music, File, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ProgressiveImage from './ProgressiveImage';
 
 interface DownloadResultsProps {
   results: any;
   downloaderId: string;
 }
 
-export default function DownloadResults({ results, downloaderId }: DownloadResultsProps) {
+const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderId }) => {
   if (!results) {
     return (
       <div className="text-center py-6 text-gray-500 dark:text-gray-400">
@@ -32,7 +33,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
         key={`${url}-${index}`}
         asChild
         size="sm"
-        className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] mb-2 mr-2"
+        className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-500 dark:to-emerald-500 hover:from-green-700 hover:to-emerald-700 dark:hover:from-green-600 dark:hover:to-emerald-600 text-white shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] mb-2 mr-2"
       >
         <a href={url} target="_blank" rel="noopener noreferrer" download={filename}>
           <Icon className="w-3 h-3 mr-2" />
@@ -44,7 +45,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
   };
 
   const renderThumbnail = (src: string, alt: string) => (
-    <img 
+    <ProgressiveImage 
       src={src} 
       alt={alt} 
       className="w-full max-w-sm mx-auto rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 mb-3"
@@ -320,4 +321,8 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
       </details>
     </div>
   );
-}
+});
+
+DownloadResults.displayName = 'DownloadResults';
+
+export default DownloadResults;
