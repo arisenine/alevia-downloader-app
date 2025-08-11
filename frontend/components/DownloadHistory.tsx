@@ -1,11 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { History, Trash2, Star, StarOff, ExternalLink, Calendar, Filter } from 'lucide-react';
+import { History, Trash2, Star, StarOff, ExternalLink, Calendar, Filter, X, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getDownloadHistory, clearDownloadHistory, toggleFavoritePlatform, getUserPreferences } from '../utils/storage';
 import { HistoryItemSkeleton } from './SkeletonLoader';
 import { platformData } from '../data/platforms';
+import { useMutation } from '@tanstack/react-query';
+import backend from '~backend/client';
+import { handleApiError, showErrorToast, showSuccessToast } from '../utils/errorHandler';
 
 interface DownloadHistoryProps {
   onClose: () => void;
@@ -19,6 +22,30 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
 
   const history = getDownloadHistory();
   const preferences = getUserPreferences();
+
+  const redownloadMutation = useMutation({
+    mutationFn: async ({ url, platform, downloader }: { url: string; platform: string; downloader: string }) => {
+      const response = await backend.downloader.download({
+        url,
+        platform,
+        type: downloader.replace(`${platform}`, '').replace(/^-/, '') || 'default'
+      });
+      return response;
+    },
+    onSuccess: (data, variables) => {
+      if (data.success) {
+        showSuccessToast("File berhasil diunduh ulang!");
+      } else {
+        const error = handleApiError({ message: data.message });
+        showErrorToast(error);
+      }
+    },
+    onError: (error) => {
+      console.error('Redownload error:', error);
+      const appError = handleApiError(error);
+      showErrorToast(appError);
+    }
+  });
 
   const filteredHistory = useMemo(() => {
     return history.filter(item => {
@@ -35,13 +62,21 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
 
   const handleClearHistory = async () => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 500));
     clearDownloadHistory();
     setIsLoading(false);
   };
 
   const handleToggleFavorite = (platformId: string) => {
     toggleFavoritePlatform(platformId);
+  };
+
+  const handleRedownload = (item: any) => {
+    redownloadMutation.mutate({
+      url: item.url,
+      platform: item.platform,
+      downloader: item.downloader
+    });
   };
 
   const getPlatformIcon = (platformId: string) => {
@@ -72,7 +107,7 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
             </h3>
           </div>
           <Button variant="ghost" size="sm" onClick={onClose}>
-            <ExternalLink className="w-4 h-4" />
+            <X className="w-4 h-4" />
           </Button>
         </div>
 
@@ -185,8 +220,19 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
                     <Button
                       variant="ghost"
                       size="sm"
+                      onClick={() => handleRedownload(item)}
+                      disabled={redownloadMutation.isPending}
+                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                      title="Unduh Ulang"
+                    >
+                      <Download className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => handleToggleFavorite(item.platform)}
                       className="text-gray-400 hover:text-yellow-500"
+                      title="Toggle Favorit"
                     >
                       {preferences.favoritePlatforms.includes(item.platform) ? (
                         <Star className="w-4 h-4 fill-current text-yellow-500" />
@@ -198,7 +244,8 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                      className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                      title="Buka URL"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </a>

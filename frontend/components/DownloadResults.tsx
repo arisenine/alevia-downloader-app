@@ -33,7 +33,7 @@ const DownloadResults = React.memo<DownloadResultsProps>(({ results, downloaderI
         key={`${url}-${index}`}
         asChild
         size="sm"
-        className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-500 dark:to-emerald-500 hover:from-green-700 hover:to-emerald-700 dark:hover:from-green-600 dark:hover:to-emerald-600 text-white shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] mb-2 mr-2"
+        className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white shadow-sm hover:shadow-md transition-all duration-200 mb-2 mr-2"
       >
         <a href={url} target="_blank" rel="noopener noreferrer" download={filename}>
           <Icon className="w-3 h-3 mr-2" />

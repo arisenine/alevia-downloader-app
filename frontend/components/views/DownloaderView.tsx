@@ -109,7 +109,7 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
           variant="outline"
           size="sm"
           onClick={onBackToPlatforms}
-          className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300"
+          className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Kembali
@@ -126,9 +126,9 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 transition-all duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-xl flex items-center justify-center">
             <i className={`${platform.icon} text-white text-xl`}></i>
           </div>
           <div>
@@ -146,7 +146,7 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
                 value={url}
                 onChange={(e) => handleUrlChange(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className={`h-12 text-base bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:bg-white dark:focus:bg-gray-600 transition-all duration-300 ${
+                className={`h-12 text-base bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:bg-white dark:focus:bg-gray-600 ${
                   validationError ? 'border-red-300 dark:border-red-600 focus:border-red-500 dark:focus:border-red-500' : 'focus:border-blue-300 dark:focus:border-blue-500'
                 }`}
                 disabled={downloadMutation.isPending}
@@ -164,7 +164,7 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
               <Button
                 onClick={handleDownload}
                 disabled={downloadMutation.isPending || !url.trim() || !!validationError}
-                className="flex-1 h-12 text-base font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01]"
+                className="flex-1 h-12 text-base font-semibold bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
               >
                 {downloadMutation.isPending ? (
                   <>
@@ -192,7 +192,7 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
             </div>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4 min-h-[150px] transition-all duration-300">
+          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4 min-h-[150px]">
             {downloadMutation.isPending ? (
               <ResultsSkeleton />
             ) : results ? (

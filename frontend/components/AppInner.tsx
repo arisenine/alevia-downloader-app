@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import MainContent from './MainContent';
 import WhatsAppFab from './WhatsAppFab';
 import DownloadHistory from './DownloadHistory';
+import Footer from './Footer';
 import ErrorBoundary from './ErrorBoundary';
 import { platformData } from '../data/platforms';
 import { getUserPreferences } from '../utils/storage';
@@ -77,35 +78,38 @@ const AppInner = React.memo(() => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       <Header 
         onHomeClick={handleBackToHome} 
         onHistoryClick={handleShowHistory}
       />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <ErrorBoundary>
-            <Sidebar 
-              platforms={sortedPlatforms}
-              currentCategory={currentCategory}
-              onPlatformSelect={handlePlatformSelect}
-            />
-          </ErrorBoundary>
-          
-          <ErrorBoundary>
-            <MainContent
-              currentView={currentView}
-              currentCategory={currentCategory}
-              currentDownloader={currentDownloader}
-              onDownloaderSelect={handleDownloaderSelect}
-              onBackToHome={handleBackToHome}
-              onBackToPlatforms={handleBackToPlatforms}
-            />
-          </ErrorBoundary>
+      <div className="flex-1">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <ErrorBoundary>
+              <Sidebar 
+                platforms={sortedPlatforms}
+                currentCategory={currentCategory}
+                onPlatformSelect={handlePlatformSelect}
+              />
+            </ErrorBoundary>
+            
+            <ErrorBoundary>
+              <MainContent
+                currentView={currentView}
+                currentCategory={currentCategory}
+                currentDownloader={currentDownloader}
+                onDownloaderSelect={handleDownloaderSelect}
+                onBackToHome={handleBackToHome}
+                onBackToPlatforms={handleBackToPlatforms}
+              />
+            </ErrorBoundary>
+          </div>
         </div>
       </div>
 
+      <Footer />
       <WhatsAppFab />
       
       {showHistory && (

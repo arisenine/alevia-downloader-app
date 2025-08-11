@@ -31,16 +31,16 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
           variant="outline"
           size="sm"
           onClick={onBackToHome}
-          className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300"
+          className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           <Home className="w-4 h-4 mr-2" />
           Beranda
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 transition-all duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-xl flex items-center justify-center">
             <i className={`${platform.icon} text-white text-xl`}></i>
           </div>
           <div className="flex-1">
@@ -68,21 +68,21 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
             platform.downloaders.map((downloader, index) => (
               <div
                 key={downloader.id}
-                className="group cursor-pointer p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1"
+                className="group cursor-pointer p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:shadow-lg transition-all duration-200"
                 onClick={() => onDownloaderSelect(downloader)}
               >
                 <div className="flex items-start space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
-                    <i className={`${platform.icon} text-white text-sm`}></i>
+                  <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                    <i className={`${platform.icon} text-sm`}></i>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-gray-800 dark:group-hover:text-gray-100 transition-colors">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                       {downloader.name}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-300 mb-3 text-sm leading-relaxed">
                       {downloader.instructions}
                     </p>
-                    <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium text-sm group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                    <div className="flex items-center text-blue-600 dark:text-blue-400 font-medium text-sm">
                       <span>Pilih Downloader</span>
                       <ArrowLeft className="w-3 h-3 ml-2 rotate-180 group-hover:translate-x-1 transition-transform" />
                     </div>
