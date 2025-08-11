@@ -11,10 +11,10 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+              <h3 className="text-2xl font-black text-gray-900 dark:text-white">
                 LEVTOOLS
               </h3>
             </div>
@@ -59,27 +59,27 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-gray-600 dark:text-gray-400">
               <li className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 <span>Download video tanpa watermark</span>
               </li>
               <li className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 <span>Support 10+ platform populer</span>
               </li>
               <li className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                 <span>Batch download untuk efisiensi</span>
               </li>
               <li className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <span>Riwayat download otomatis</span>
               </li>
               <li className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                 <span>Interface responsif & modern</span>
               </li>
               <li className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
                 <span>Gratis selamanya</span>
               </li>
             </ul>
@@ -90,18 +90,18 @@ export default function Footer() {
             <h4 className="text-xl font-bold text-gray-900 dark:text-white">Platform Didukung</h4>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { name: 'TikTok', color: 'from-pink-500 to-rose-500' },
-                { name: 'Instagram', color: 'from-purple-500 to-pink-500' },
-                { name: 'YouTube', color: 'from-red-500 to-orange-500' },
-                { name: 'Twitter/X', color: 'from-blue-400 to-cyan-400' },
-                { name: 'Facebook', color: 'from-blue-600 to-indigo-600' },
-                { name: 'Spotify', color: 'from-green-500 to-emerald-500' },
-                { name: 'Pinterest', color: 'from-red-500 to-pink-500' },
-                { name: 'Threads', color: 'from-gray-600 to-gray-800' },
-                { name: 'Mediafire', color: 'from-blue-500 to-cyan-500' },
-                { name: 'Terabox', color: 'from-purple-500 to-indigo-500' }
+                { name: 'TikTok', color: 'bg-pink-600' },
+                { name: 'Instagram', color: 'bg-purple-600' },
+                { name: 'YouTube', color: 'bg-red-600' },
+                { name: 'Twitter/X', color: 'bg-blue-500' },
+                { name: 'Facebook', color: 'bg-blue-700' },
+                { name: 'Spotify', color: 'bg-green-600' },
+                { name: 'Pinterest', color: 'bg-red-600' },
+                { name: 'Threads', color: 'bg-gray-700' },
+                { name: 'Mediafire', color: 'bg-blue-600' },
+                { name: 'Terabox', color: 'bg-purple-600' }
               ].map((platform, index) => (
-                <div key={index} className={`px-3 py-2 bg-gradient-to-r ${platform.color} rounded-xl text-white text-sm font-semibold text-center shadow-lg hover:scale-105 transition-transform duration-300`}>
+                <div key={index} className={`px-3 py-2 ${platform.color} rounded-xl text-white text-sm font-semibold text-center shadow-lg hover:scale-105 transition-transform duration-300`}>
                   {platform.name}
                 </div>
               ))}
@@ -115,7 +115,7 @@ export default function Footer() {
               <span>© {currentYear} LEVTOOLS. Dibuat dengan</span>
               <Heart className="w-4 h-4 text-red-500 fill-current animate-pulse" />
               <span>oleh</span>
-              <span className="font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+              <span className="font-bold text-blue-600 dark:text-blue-400">
                 Levi Setiadi
               </span>
             </div>

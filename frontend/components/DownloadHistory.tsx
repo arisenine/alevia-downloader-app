@@ -99,7 +99,7 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
       <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
         <div className="flex items-center justify-between p-8 border-b border-gray-200/50 dark:border-gray-700/50">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
               <History className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -154,25 +154,25 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
 
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-2xl p-4 text-center border border-blue-200/50 dark:border-blue-700/50">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 text-center border border-blue-200/50 dark:border-blue-700/50">
               <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
                 {history.length}
               </div>
               <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Total</div>
             </div>
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-4 text-center border border-green-200/50 dark:border-green-700/50">
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 text-center border border-green-200/50 dark:border-green-700/50">
               <div className="text-2xl font-black text-green-600 dark:text-green-400">
                 {history.filter(h => h.success).length}
               </div>
               <div className="text-sm font-medium text-green-700 dark:text-green-300">Berhasil</div>
             </div>
-            <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-2xl p-4 text-center border border-red-200/50 dark:border-red-700/50">
+            <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 text-center border border-red-200/50 dark:border-red-700/50">
               <div className="text-2xl font-black text-red-600 dark:text-red-400">
                 {history.filter(h => !h.success).length}
               </div>
               <div className="text-sm font-medium text-red-700 dark:text-red-300">Gagal</div>
             </div>
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-4 text-center border border-purple-200/50 dark:border-purple-700/50">
+            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-4 text-center border border-purple-200/50 dark:border-purple-700/50">
               <div className="text-2xl font-black text-purple-600 dark:text-purple-400">
                 {preferences.favoritePlatforms.length}
               </div>
@@ -201,8 +201,8 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
                   <div className="flex items-center space-x-4 flex-1 min-w-0">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${
                       item.success 
-                        ? 'bg-gradient-to-br from-green-500 to-emerald-500 shadow-green-500/30' 
-                        : 'bg-gradient-to-br from-red-500 to-pink-500 shadow-red-500/30'
+                        ? 'bg-green-600 shadow-green-500/30' 
+                        : 'bg-red-600 shadow-red-500/30'
                     }`}>
                       <i className={`${getPlatformIcon(item.platform)} text-lg text-white`}></i>
                     </div>

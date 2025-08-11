@@ -21,13 +21,13 @@ export default function Header({ onHomeClick, onHistoryClick }: HeaderProps) {
           >
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-xl group-hover:shadow-blue-500/40 transition-all duration-300">
+                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-xl group-hover:shadow-blue-500/40 transition-all duration-300">
                   <Sparkles className="w-6 h-6 text-white" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full animate-pulse"></div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-blue-600 transition-all duration-300">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all duration-300">
                   LEVTOOLS
                 </h1>
                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
@@ -46,7 +46,7 @@ export default function Header({ onHomeClick, onHistoryClick }: HeaderProps) {
               title="Riwayat Download"
             >
               <History className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all duration-300"></div>
+              <div className="absolute inset-0 rounded-xl bg-blue-500/0 group-hover:bg-blue-500/10 transition-all duration-300"></div>
             </Button>
             
             <Button
@@ -61,7 +61,7 @@ export default function Header({ onHomeClick, onHistoryClick }: HeaderProps) {
               ) : (
                 <Sun className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-yellow-500 dark:group-hover:text-yellow-400 transition-colors" />
               )}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/0 to-yellow-500/0 group-hover:from-indigo-500/10 group-hover:to-yellow-500/10 transition-all duration-300"></div>
+              <div className="absolute inset-0 rounded-xl bg-indigo-500/0 group-hover:bg-indigo-500/10 transition-all duration-300"></div>
             </Button>
           </div>
         </div>

@@ -139,7 +139,7 @@ export default function BatchDownloader({ platform, downloaderType, onClose }: B
       <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
         <div className="flex items-center justify-between p-8 border-b border-gray-200/50 dark:border-gray-700/50">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -171,7 +171,7 @@ export default function BatchDownloader({ platform, downloaderType, onClose }: B
             <Button 
               onClick={handleAddUrls} 
               disabled={!urls.trim() || isProcessing}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl px-6 py-3 font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-6 py-3 font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300"
             >
               <Plus className="w-4 h-4 mr-2" />
               Tambah ke Batch
@@ -210,7 +210,7 @@ export default function BatchDownloader({ platform, downloaderType, onClose }: B
                     key={item.id}
                     className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${
                       item.status === 'processing' 
-                        ? 'bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-700 shadow-lg shadow-blue-500/20'
+                        ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 shadow-lg shadow-blue-500/20'
                         : 'bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border-gray-200 dark:border-gray-600'
                     }`}
                   >
@@ -244,7 +244,7 @@ export default function BatchDownloader({ platform, downloaderType, onClose }: B
               <Button
                 onClick={processBatch}
                 disabled={isProcessing || batchItems.length === 0}
-                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-2xl shadow-xl shadow-green-500/30 hover:shadow-2xl hover:shadow-green-500/40 transition-all duration-300 hover:scale-105 disabled:hover:scale-100"
+                className="w-full h-14 text-lg font-bold bg-green-600 hover:bg-green-700 text-white rounded-2xl shadow-xl shadow-green-500/30 hover:shadow-2xl hover:shadow-green-500/40 transition-all duration-300 hover:scale-105 disabled:hover:scale-100"
               >
                 {isProcessing ? (
                   <>

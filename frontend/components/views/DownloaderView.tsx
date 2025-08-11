@@ -139,7 +139,7 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
           variant="outline"
           size="sm"
           onClick={() => setShowBatch(true)}
-          className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200/50 dark:border-blue-700/50 text-blue-700 dark:text-blue-300 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30 hover:shadow-lg transition-all duration-300 rounded-xl"
+          className="bg-blue-50 dark:bg-blue-900/20 border-blue-200/50 dark:border-blue-700/50 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-lg transition-all duration-300 rounded-xl"
         >
           <Users className="w-4 h-4 mr-2" />
           Batch Download
@@ -148,16 +148,16 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
 
       <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl shadow-black/10 p-8 overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-pink-900/10"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 bg-slate-50/30 dark:bg-slate-900/10"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
         
         <div className="relative z-10">
           <div className="flex items-center space-x-6 mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/30">
+            <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/30">
               <i className={`${platform.icon} text-white text-3xl`}></i>
             </div>
             <div>
-              <h2 className="text-4xl font-black mb-2 bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+              <h2 className="text-4xl font-black mb-2 text-gray-900 dark:text-white">
                 {downloader.name}
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 font-medium">
@@ -210,7 +210,7 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
                 <Button
                   onClick={handleDownload}
                   disabled={downloadMutation.isPending || !url.trim() || !!validationError}
-                  className="flex-1 h-16 text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 disabled:hover:scale-100"
+                  className="flex-1 h-16 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 disabled:hover:scale-100"
                 >
                   {downloadMutation.isPending ? (
                     <>
@@ -267,7 +267,7 @@ const DownloaderView = React.memo<DownloaderViewProps>(({ downloader, platform, 
           </div>
 
           {/* Pro Tip */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl border border-green-200/50 dark:border-green-700/50 shadow-lg">
+          <div className="mt-8 p-6 bg-green-50 dark:bg-green-900/20 rounded-2xl border border-green-200/50 dark:border-green-700/50 shadow-lg">
             <div className="flex items-center space-x-3 mb-3">
               <Sparkles className="w-6 h-6 text-green-600 dark:text-green-400" />
               <span className="text-lg font-bold text-green-900 dark:text-green-100">Tips & Tricks</span>
