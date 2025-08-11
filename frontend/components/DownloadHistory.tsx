@@ -1,10 +1,9 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { History, Trash2, Star, StarOff, ExternalLink, Calendar, Filter, X, Download, Sparkles, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { History, Trash2, Star, StarOff, ExternalLink, Calendar, X, Download, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getDownloadHistory, clearDownloadHistory, toggleFavoritePlatform, getUserPreferences, removeFromDownloadHistory } from '../utils/storage';
-import { HistoryItemSkeleton } from './SkeletonLoader';
 import { platformData } from '../data/platforms';
 import { useMutation } from '@tanstack/react-query';
 import backend from '~backend/client';
@@ -20,8 +19,8 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(false);
 
-  const history = getDownloadHistory();
-  const preferences = getUserPreferences();
+  const history = useMemo(() => getDownloadHistory(), []);
+  const preferences = useMemo(() => getUserPreferences(), []);
 
   const redownloadMutation = useMutation({
     mutationFn: async ({ url, platform, downloader }: { url: string; platform: string; downloader: string }) => {
@@ -32,7 +31,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
       });
       return response;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       if (data.success) {
         showSuccessToast("File berhasil diunduh ulang!");
       } else {
@@ -69,7 +68,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
 
   const handleClearHistory = useCallback(async () => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300));
     clearDownloadHistory();
     setIsLoading(false);
     showSuccessToast("Riwayat berhasil dihapus");
@@ -205,11 +204,26 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <HistoryItemSkeleton key={i} />
+                <div key={i} className="p-4 bg-white/50 dark:bg-gray-700/50 rounded-2xl border border-gray-200/50 dark:border-gray-600/50 animate-pulse">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4 flex-1">
+                      <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
+                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
+                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
+                    </div>
+                  </div>
+                </div>
               ))
             ) : filteredHistory.length === 0 ? (
               <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                <Sparkles className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                <History className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <p className="text-xl font-medium mb-2">Tidak ada riwayat download ditemukan</p>
                 <p className="text-sm">Mulai download untuk melihat riwayat di sini</p>
               </div>
@@ -217,7 +231,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
               filteredHistory.map((item) => (
                 <div 
                   key={item.id}
-                  className="flex items-center justify-between p-4 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-lg hover:shadow-black/10 transition-all duration-300"
+                  className="flex items-center justify-between p-4 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-lg hover:shadow-black/10 transition-all duration-200"
                 >
                   <div className="flex items-center space-x-4 flex-1 min-w-0">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${
@@ -270,7 +284,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300"
+                      className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200"
                       title="Buka URL"
                     >
                       <ExternalLink className="w-4 h-4" />

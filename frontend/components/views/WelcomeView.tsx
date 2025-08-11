@@ -2,15 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Download, Zap, Shield, Star, TrendingUp, Users, Clock, Sparkles, ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getDownloadHistory, getUserPreferences } from '../../utils/storage';
-import { WelcomeViewSkeleton } from '../SkeletonLoader';
 
 const WelcomeView = React.memo(() => {
   const [isLoading, setIsLoading] = useState(true);
-  const history = getDownloadHistory();
-  const preferences = getUserPreferences();
+  const history = useMemo(() => getDownloadHistory(), []);
+  const preferences = useMemo(() => getUserPreferences(), []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
+    const timer = setTimeout(() => setIsLoading(false), 400);
     return () => clearTimeout(timer);
   }, []);
 
@@ -30,21 +29,21 @@ const WelcomeView = React.memo(() => {
     };
   }, [history, preferences]);
 
-  const features = [
+  const features = useMemo(() => [
     { icon: Download, title: 'Multi-Platform', desc: 'Support 10+ platform populer', color: 'bg-blue-600', iconColor: 'text-blue-600' },
     { icon: Zap, title: 'Lightning Fast', desc: 'Download dalam hitungan detik', color: 'bg-orange-500', iconColor: 'text-orange-600' },
     { icon: Shield, title: 'Secure & Safe', desc: 'Aman dan terpercaya 100%', color: 'bg-green-600', iconColor: 'text-green-600' },
     { icon: Star, title: 'Premium Free', desc: 'Gratis selamanya tanpa batas', color: 'bg-purple-600', iconColor: 'text-purple-600' }
-  ];
+  ], []);
 
-  const displayStats = [
+  const displayStats = useMemo(() => [
     { icon: Users, value: stats.users, label: 'Happy Users', color: 'bg-blue-600', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
     { icon: Download, value: stats.downloads, label: 'Downloads', color: 'bg-green-600', bgColor: 'bg-green-50 dark:bg-green-900/20' },
     { icon: TrendingUp, value: stats.successRate, label: 'Success Rate', color: 'bg-purple-600', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
     { icon: Clock, value: stats.availability, label: 'Available', color: 'bg-orange-600', bgColor: 'bg-orange-50 dark:bg-orange-900/20' }
-  ];
+  ], [stats]);
 
-  const platforms = [
+  const platforms = useMemo(() => [
     { name: 'TikTok', icon: 'fab fa-tiktok', color: 'bg-pink-600', bgColor: 'bg-pink-50 dark:bg-pink-900/20' },
     { name: 'Instagram', icon: 'fab fa-instagram', color: 'bg-purple-600', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
     { name: 'YouTube', icon: 'fab fa-youtube', color: 'bg-red-600', bgColor: 'bg-red-50 dark:bg-red-900/20' },
@@ -53,10 +52,34 @@ const WelcomeView = React.memo(() => {
     { name: 'Spotify', icon: 'fab fa-spotify', color: 'bg-green-600', bgColor: 'bg-green-50 dark:bg-green-900/20' },
     { name: 'Pinterest', icon: 'fab fa-pinterest', color: 'bg-red-600', bgColor: 'bg-red-50 dark:bg-red-900/20' },
     { name: 'Threads', icon: 'fab fa-threads', color: 'bg-gray-700 dark:bg-gray-300', bgColor: 'bg-gray-50 dark:bg-gray-800/20' }
-  ];
+  ], []);
 
   if (isLoading) {
-    return <WelcomeViewSkeleton />;
+    return (
+      <div className="space-y-8">
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl p-8 lg:p-12 text-center">
+          <div className="w-20 h-20 mx-auto mb-8 bg-gray-300 dark:bg-gray-600 rounded-3xl animate-pulse"></div>
+          <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-6 animate-pulse"></div>
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-full max-w-3xl mx-auto mb-4 animate-pulse"></div>
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-2/3 max-w-3xl mx-auto mb-8 animate-pulse"></div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl w-48 animate-pulse"></div>
+            <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl w-48 animate-pulse"></div>
+          </div>
+          
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="p-6 bg-white/80 dark:bg-gray-700/80 rounded-2xl">
+                <div className="w-12 h-12 mx-auto mb-4 bg-gray-300 dark:bg-gray-600 rounded-xl animate-pulse"></div>
+                <div className="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-2 animate-pulse"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -103,12 +126,12 @@ const WelcomeView = React.memo(() => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-200 hover:scale-105">
               <Play className="w-5 h-5 mr-2" />
               Mulai Download
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button variant="outline" className="border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300">
+            <Button variant="outline" className="border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200">
               <Sparkles className="w-5 h-5 mr-2" />
               Lihat Fitur
             </Button>
@@ -119,9 +142,9 @@ const WelcomeView = React.memo(() => {
             {features.map((feature, index) => (
               <div 
                 key={index}
-                className="group p-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-300"
+                className="group p-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-200"
               >
-                <div className={`w-12 h-12 mx-auto mb-4 ${feature.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 mx-auto mb-4 ${feature.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200`}>
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
                 <div className="font-bold text-gray-900 dark:text-white text-lg mb-2">{feature.title}</div>
@@ -133,7 +156,7 @@ const WelcomeView = React.memo(() => {
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {displayStats.map((stat, index) => (
-              <div key={index} className={`text-center p-6 ${stat.bgColor} backdrop-blur-sm rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 transition-all duration-300 shadow-lg`}>
+              <div key={index} className={`text-center p-6 ${stat.bgColor} backdrop-blur-sm rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 transition-all duration-200 shadow-lg`}>
                 <div className={`w-10 h-10 mx-auto mb-3 ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
                   <stat.icon className="w-5 h-5 text-white" />
                 </div>
@@ -160,9 +183,9 @@ const WelcomeView = React.memo(() => {
           {platforms.map((platform, index) => (
             <div 
               key={index}
-              className={`group text-center p-6 ${platform.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 hover:shadow-xl hover:shadow-black/10 transition-all duration-300 cursor-pointer`}
+              className={`group text-center p-6 ${platform.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 hover:shadow-xl hover:shadow-black/10 transition-all duration-200 cursor-pointer`}
             >
-              <div className={`w-14 h-14 mx-auto mb-4 ${platform.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-14 h-14 mx-auto mb-4 ${platform.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200`}>
                 <i className={`${platform.icon} text-xl text-white`}></i>
               </div>
               <span className="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">

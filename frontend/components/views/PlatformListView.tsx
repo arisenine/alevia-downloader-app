@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Home, Zap, Shield, Star, Sparkles, ArrowRight, Download, Clock } from 'lucide-react';
 import { Platform, Downloader } from '../AppInner';
 import { Button } from '@/components/ui/button';
-import { DownloaderCardSkeleton } from '../SkeletonLoader';
 import { getDownloadHistory } from '../../utils/storage';
 
 interface PlatformListViewProps {
@@ -13,10 +12,10 @@ interface PlatformListViewProps {
 
 const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownloaderSelect, onBackToHome }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const history = getDownloadHistory();
+  const history = useMemo(() => getDownloadHistory(), []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 300);
+    const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -36,11 +35,11 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
     return stats;
   }, [history, platform.id]);
 
-  const features = [
+  const features = useMemo(() => [
     { icon: Zap, text: 'Lightning Fast', color: 'text-orange-500', bgColor: 'bg-orange-50 dark:bg-orange-900/20' },
     { icon: Shield, text: 'Secure & Safe', color: 'text-green-500', bgColor: 'bg-green-50 dark:bg-green-900/20' },
     { icon: Star, text: 'Premium Quality', color: 'text-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-900/20' }
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">
@@ -49,7 +48,7 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
           variant="outline"
           size="sm"
           onClick={onBackToHome}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-lg transition-all duration-300 rounded-xl"
+          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-lg transition-all duration-200 rounded-xl"
         >
           <Home className="w-4 h-4 mr-2" />
           Beranda
@@ -79,7 +78,7 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
           {/* Features */}
           <div className="flex flex-wrap gap-4 mb-8">
             {features.map((feature, index) => (
-              <div key={index} className={`flex items-center space-x-3 px-6 py-3 ${feature.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 shadow-lg hover:scale-105 transition-all duration-300`}>
+              <div key={index} className={`flex items-center space-x-3 px-6 py-3 ${feature.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 shadow-lg hover:scale-105 transition-all duration-200`}>
                 <feature.icon className={`w-5 h-5 ${feature.color}`} />
                 <span className="text-gray-700 dark:text-gray-300 font-semibold">{feature.text}</span>
               </div>
@@ -89,21 +88,30 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {isLoading ? (
               Array.from({ length: platform.downloaders.length }).map((_, i) => (
-                <DownloaderCardSkeleton key={i} />
+                <div key={i} className="p-6 bg-white/50 dark:bg-gray-700/50 rounded-2xl border border-gray-200/50 dark:border-gray-600/50 animate-pulse">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-2xl"></div>
+                    <div className="flex-1 space-y-3">
+                      <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-2/3"></div>
+                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
+                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                </div>
               ))
             ) : (
-              platform.downloaders.map((downloader, index) => {
+              platform.downloaders.map((downloader) => {
                 const stats = downloaderStats[downloader.id];
                 const isRecentlyUsed = stats && (Date.now() - stats.lastUsed) < (7 * 24 * 60 * 60 * 1000);
                 
                 return (
                   <div
                     key={downloader.id}
-                    className="group cursor-pointer p-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden relative"
+                    className="group cursor-pointer p-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-200 overflow-hidden relative"
                     onClick={() => onDownloaderSelect(downloader)}
                   >
                     {/* Background Gradient */}
-                    <div className="absolute inset-0 bg-blue-50/0 group-hover:bg-blue-50/50 dark:group-hover:bg-blue-900/20 transition-all duration-300"></div>
+                    <div className="absolute inset-0 bg-blue-50/0 group-hover:bg-blue-50/50 dark:group-hover:bg-blue-900/20 transition-all duration-200"></div>
                     
                     {/* Recently Used Badge */}
                     {isRecentlyUsed && (
@@ -115,7 +123,7 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
                     
                     <div className="relative z-10">
                       <div className="flex items-start space-x-4">
-                        <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-500/30 group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-blue-500/40 transition-all duration-300">
+                        <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-500/30 group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-blue-500/40 transition-all duration-200">
                           <i className={`${platform.icon} text-xl`}></i>
                         </div>
                         <div className="flex-1">

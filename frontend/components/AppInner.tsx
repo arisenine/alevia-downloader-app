@@ -34,7 +34,7 @@ const AppInner = React.memo(() => {
   const [currentDownloader, setCurrentDownloader] = useState<Downloader | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
-  const preferences = getUserPreferences();
+  const preferences = useMemo(() => getUserPreferences(), []);
 
   const sortedPlatforms = useMemo(() => {
     const favorites = preferences.favoritePlatforms;

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Star, Grid3X3, Sparkles, TrendingUp, Clock } from 'lucide-react';
 import { Platform } from './AppInner';
 import { getUserPreferences, getDownloadHistory } from '../utils/storage';
-import { PlatformCardSkeleton } from './SkeletonLoader';
 
 interface SidebarProps {
   platforms: Platform[];
@@ -12,11 +11,11 @@ interface SidebarProps {
 
 const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatformSelect }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const preferences = getUserPreferences();
-  const history = getDownloadHistory();
+  const preferences = useMemo(() => getUserPreferences(), []);
+  const history = useMemo(() => getDownloadHistory(), []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 500);
+    const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -54,7 +53,15 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
             </div>
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
-                <PlatformCardSkeleton key={i} />
+                <div key={i} className="p-4 bg-white/50 dark:bg-gray-700/50 rounded-2xl border border-gray-200/50 dark:border-gray-600/50 animate-pulse">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
+                    <div className="flex-1 space-y-3">
+                      <div className="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -87,7 +94,7 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
               return (
                 <div
                   key={platform.id}
-                  className={`group cursor-pointer p-4 rounded-xl border transition-all duration-300 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-0.5 relative overflow-hidden ${
+                  className={`group cursor-pointer p-4 rounded-xl border transition-all duration-200 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-0.5 relative overflow-hidden ${
                     isActive
                       ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 shadow-lg shadow-blue-500/20'
                       : 'bg-white/50 dark:bg-gray-700/50 border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500'
@@ -114,7 +121,7 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
                   </div>
                   
                   <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg ${
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 shadow-lg ${
                       isActive
                         ? 'bg-blue-600 text-white shadow-blue-500/30'
                         : 'bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-blue-500/30'
@@ -136,7 +143,7 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
                     </div>
                   </div>
                   
-                  <div className={`absolute inset-0 rounded-xl bg-blue-500/0 group-hover:bg-blue-500/5 transition-all duration-300 ${
+                  <div className={`absolute inset-0 rounded-xl bg-blue-500/0 group-hover:bg-blue-500/5 transition-all duration-200 ${
                     isActive ? 'bg-blue-500/10' : ''
                   }`}></div>
                 </div>
