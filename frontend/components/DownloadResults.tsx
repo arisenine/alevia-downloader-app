@@ -10,7 +10,7 @@ interface DownloadResultsProps {
 export default function DownloadResults({ results, downloaderId }: DownloadResultsProps) {
   if (!results) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-6 text-gray-500 dark:text-gray-400">
         Tidak ada hasil untuk ditampilkan.
       </div>
     );
@@ -31,10 +31,11 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
       <Button
         key={`${url}-${index}`}
         asChild
-        className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] mb-2 mr-2"
+        size="sm"
+        className="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] mb-2 mr-2"
       >
         <a href={url} target="_blank" rel="noopener noreferrer" download={filename}>
-          <Icon className="w-4 h-4 mr-2" />
+          <Icon className="w-3 h-3 mr-2" />
           {displayName}
           <ExternalLink className="w-3 h-3 ml-2" />
         </a>
@@ -46,52 +47,61 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
     <img 
       src={src} 
       alt={alt} 
-      className="w-full max-w-md mx-auto rounded-xl shadow-lg border border-gray-200/50 mb-4"
+      className="w-full max-w-sm mx-auto rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 mb-3"
     />
   );
 
   const renderTitle = (title: string) => (
-    <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">{title}</h3>
+    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 text-center">{title}</h3>
   );
 
   const renderMetadata = (label: string, value: string) => (
-    <p className="text-sm text-gray-600 mb-2">
-      <span className="font-semibold">{label}:</span> {value}
+    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+      <span className="font-medium">{label}:</span> {value}
     </p>
   );
 
-  // Handle different result types based on downloaderId
+  // Handle TikTok with new API structure
   if (downloaderId.includes('tiktok')) {
     if (downloaderId.includes('slide')) {
-      return (
-        <div className="text-center py-8 text-gray-500">
-          <File className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-          <p>API TikTok Slide tidak menyediakan tautan langsung saat ini.</p>
-        </div>
-      );
-    }
-
-    if (results.result) {
-      const { title, thumbnail, cover, video, audio } = results.result;
-      return (
-        <div className="space-y-4">
-          {title && renderTitle(title)}
-          {(thumbnail || cover) && renderThumbnail(thumbnail || cover, 'TikTok Thumbnail')}
-          <div className="flex flex-wrap justify-center">
-            {video?.[0] && renderDownloadLink(video[0], 'Video TikTok.mp4', 'video')}
-            {audio?.[0] && renderDownloadLink(audio[0], 'Audio TikTok.mp3', 'audio')}
+      if (results.result?.images) {
+        return (
+          <div className="space-y-3">
+            {results.result.title && renderTitle(results.result.title)}
+            {results.result.author && renderMetadata('Author', results.result.author)}
+            <div className="flex flex-wrap justify-center">
+              {results.result.images.map((imageUrl: string, index: number) =>
+                renderDownloadLink(imageUrl, `tiktok_slide_${index + 1}.jpg`, 'image', index)
+              )}
+              {results.result.audio && renderDownloadLink(results.result.audio, 'tiktok_audio.mp3', 'audio')}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
+    } else {
+      if (results.result) {
+        const { title, video, wm, audio, author } = results.result;
+        return (
+          <div className="space-y-3">
+            {title && renderTitle(title)}
+            {author && renderMetadata('Author', author)}
+            <div className="flex flex-wrap justify-center">
+              {video && renderDownloadLink(video, 'Video TikTok (No Watermark).mp4', 'video')}
+              {wm && renderDownloadLink(wm, 'Video TikTok (Watermark).mp4', 'video')}
+              {audio && renderDownloadLink(audio, 'Audio TikTok.mp3', 'audio')}
+            </div>
+          </div>
+        );
+      }
     }
   }
 
   if (downloaderId.includes('instagram')) {
     if (results.message && Array.isArray(results.message)) {
       return (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {results.message.map((item: any, index: number) => (
-            <div key={index} className="border-b border-gray-200/50 pb-4 last:border-b-0">
+            <div key={index} className="border-b border-gray-200 dark:border-gray-600 pb-3 last:border-b-0">
               {item.thumbnail && renderThumbnail(item.thumbnail, `Instagram Media ${index + 1}`)}
               {item._url && (
                 <div className="text-center">
@@ -113,7 +123,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
     if (results.result) {
       const { title, thumb, mp4, mp3 } = results.result;
       return (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {title && renderTitle(title)}
           {thumb && renderThumbnail(thumb, 'YouTube Thumbnail')}
           <div className="flex flex-wrap justify-center">
@@ -129,7 +139,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
     if (results.result?.url) {
       const { filename, url, filesizeH } = results.result;
       return (
-        <div className="space-y-4 text-center">
+        <div className="space-y-3 text-center">
           {filename && renderTitle(filename)}
           {filesizeH && renderMetadata('Ukuran File', filesizeH)}
           {renderDownloadLink(url, filename || 'mediafire_file', 'file')}
@@ -142,7 +152,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
     if (results.result?.data) {
       const { title, artist, duration, thumbnail, url } = results.result.data;
       return (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {title && renderTitle(title)}
           {artist?.name && renderMetadata('Artis', artist.name)}
           {duration && renderMetadata('Durasi', duration)}
@@ -159,14 +169,14 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
     if (results.result?.media_extended) {
       const { text, user_name, user_screen_name, media_extended } = results.result;
       return (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {text && renderTitle(text)}
           {user_name && renderMetadata('Oleh', `${user_name} (@${user_screen_name})`)}
           <div className="flex flex-wrap justify-center">
             {media_extended.map((item: any, index: number) => {
               if (item.thumbnail_url) {
                 return (
-                  <div key={index} className="w-full mb-4">
+                  <div key={index} className="w-full mb-3">
                     {renderThumbnail(item.thumbnail_url, `Twitter Media ${index + 1}`)}
                     {renderDownloadLink(
                       item.url,
@@ -198,7 +208,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
       
       if (videoItem?._url) {
         return (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {videoItem.thumbnail && renderThumbnail(videoItem.thumbnail, 'Facebook Video')}
             <div className="text-center">
               {renderDownloadLink(
@@ -217,7 +227,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
     if (results.result) {
       const { image_urls, video_urls } = results.result;
       return (
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex flex-wrap justify-center">
             {image_urls?.map((url: string, index: number) =>
               renderDownloadLink(url, `threads_image_${index + 1}.jpg`, 'image', index)
@@ -254,7 +264,7 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
       }
 
       return (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {pin.title && renderTitle(pin.title)}
           {pin.image && renderThumbnail(pin.image, 'Pinterest Media')}
           <div className="text-center">
@@ -268,13 +278,13 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
   if (downloaderId.includes('terabox')) {
     if (results.result && Array.isArray(results.result)) {
       return (
-        <div className="space-y-4">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">File Ditemukan:</h3>
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 text-center">File Ditemukan:</h3>
           {results.result.map((item: any, index: number) => (
-            <div key={index} className="border border-gray-200/50 rounded-xl p-4 bg-white/30">
+            <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700">
               {item.files?.map((file: any, fileIndex: number) => (
-                <div key={fileIndex} className="mb-4 last:mb-0">
-                  <h4 className="font-bold text-lg mb-2">{file.filename || item.name}</h4>
+                <div key={fileIndex} className="mb-3 last:mb-0">
+                  <h4 className="font-medium text-base mb-1 text-gray-900 dark:text-white">{file.filename || item.name}</h4>
                   {file.size && renderMetadata('Ukuran', `${(parseInt(file.size) / (1024*1024)).toFixed(2)} MB`)}
                   <div className="mt-2">
                     {renderDownloadLink(file.url, file.filename || item.name, 'file')}
@@ -290,8 +300,8 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
 
   if (downloaderId.includes('sfilemobi')) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        <File className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+      <div className="text-center py-6 text-gray-500 dark:text-gray-400">
+        <File className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
         <p>API Sfilemobi tidak menyediakan tautan langsung saat ini.</p>
       </div>
     );
@@ -299,12 +309,12 @@ export default function DownloadResults({ results, downloaderId }: DownloadResul
 
   // Fallback for unknown result structure
   return (
-    <div className="text-center py-8 text-gray-500">
-      <File className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+    <div className="text-center py-6 text-gray-500 dark:text-gray-400">
+      <File className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
       <p>Tidak ada tautan unduhan valid ditemukan.</p>
-      <details className="mt-4 text-left">
-        <summary className="cursor-pointer text-sm text-gray-400">Debug Info</summary>
-        <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto">
+      <details className="mt-3 text-left">
+        <summary className="cursor-pointer text-sm text-gray-400 dark:text-gray-500">Debug Info</summary>
+        <pre className="mt-2 text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded overflow-auto">
           {JSON.stringify(results, null, 2)}
         </pre>
       </details>

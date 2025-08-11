@@ -23,7 +23,7 @@ export default function MainContent({
 }: MainContentProps) {
   return (
     <main className="lg:col-span-3">
-      <div className="animate-in fade-in duration-500">
+      <div className="transition-all duration-500 ease-in-out">
         {currentView === 'welcome' && <WelcomeView />}
         
         {currentView === 'platformList' && currentCategory && (

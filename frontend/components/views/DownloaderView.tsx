@@ -68,66 +68,66 @@ export default function DownloaderView({ downloader, platform, onBackToPlatforms
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-4">
+    <div className="space-y-4">
+      <div className="flex items-center space-x-3">
         <Button
           variant="outline"
           size="sm"
           onClick={onBackToPlatforms}
-          className="bg-white/70 backdrop-blur-sm border-gray-200/50 hover:bg-white/90 hover:shadow-lg transition-all duration-300"
+          className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Kembali
         </Button>
       </div>
 
-      <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 shadow-xl p-8">
-        <div className="flex items-center space-x-4 mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <i className={`${platform.icon} text-white text-2xl`}></i>
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 transition-all duration-300">
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-xl flex items-center justify-center shadow-md">
+            <i className={`${platform.icon} text-white text-xl`}></i>
           </div>
           <div>
-            <h2 className="text-3xl font-black text-gray-800">{downloader.name}</h2>
-            <p className="text-gray-600">{downloader.instructions}</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{downloader.name}</h2>
+            <p className="text-gray-600 dark:text-gray-300">{downloader.instructions}</p>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="space-y-4">
+        <div className="space-y-4">
+          <div className="space-y-3">
             <Input
               type="url"
               placeholder={downloader.inputPlaceholder}
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="h-14 text-lg bg-white/50 border-gray-200/50 focus:bg-white/80 focus:border-purple-300 transition-all duration-300"
+              className="h-12 text-base bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:bg-white dark:focus:bg-gray-600 focus:border-blue-300 dark:focus:border-blue-500 transition-all duration-300"
               disabled={downloadMutation.isPending}
             />
             
             <Button
               onClick={handleDownload}
               disabled={downloadMutation.isPending || !url.trim()}
-              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+              className="w-full h-12 text-base font-semibold bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01]"
             >
               {downloadMutation.isPending ? (
                 <>
-                  <Loader2 className="w-5 h-5 mr-3 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Memproses...
                 </>
               ) : (
                 <>
-                  <Download className="w-5 h-5 mr-3" />
+                  <Download className="w-4 h-4 mr-2" />
                   Unduh Sekarang
                 </>
               )}
             </Button>
           </div>
 
-          <div className="bg-white/50 rounded-2xl border border-gray-200/50 p-6 min-h-[200px]">
+          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4 min-h-[150px] transition-all duration-300">
             {downloadMutation.isPending ? (
-              <div className="flex items-center justify-center h-32">
+              <div className="flex items-center justify-center h-24">
                 <div className="text-center">
-                  <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-purple-600" />
-                  <p className="text-gray-600 font-medium">Memproses permintaan...</p>
+                  <Loader2 className="w-6 h-6 mx-auto mb-3 animate-spin text-blue-600 dark:text-blue-400" />
+                  <p className="text-gray-600 dark:text-gray-300 font-medium text-sm">Memproses permintaan...</p>
                 </div>
               </div>
             ) : results ? (
@@ -136,8 +136,8 @@ export default function DownloaderView({ downloader, platform, onBackToPlatforms
                 downloaderId={downloader.id}
               />
             ) : (
-              <div className="flex items-center justify-center h-32">
-                <p className="text-gray-500 text-center">
+              <div className="flex items-center justify-center h-24">
+                <p className="text-gray-500 dark:text-gray-400 text-center text-sm">
                   Masukkan URL di atas dan klik "Unduh Sekarang" untuk memulai.
                 </p>
               </div>

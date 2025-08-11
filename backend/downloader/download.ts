@@ -22,13 +22,72 @@ export const download = api<DownloadRequest, DownloadResponse>(
       throw APIError.invalidArgument("URL, platform, and type are required");
     }
 
+    // Handle TikTok with custom API
+    if (platform === 'tiktok') {
+      try {
+        const host = 'https://www.tikwm.com/';
+        const response = await fetch(host + 'api/', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json, text/javascript, */*; q=0.01',
+            'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
+          },
+          body: new URLSearchParams({
+            url: url,
+            count: '12',
+            cursor: '0',
+            web: '1',
+            hd: '1'
+          })
+        });
+
+        const data = await response.json();
+        
+        if (type === 'slide') {
+          return {
+            success: true,
+            data: {
+              status: true,
+              result: {
+                images: data.data.images,
+                audio: host + data.data.music,
+                author: data.data.author.nickname,
+                title: data.data.title
+              }
+            }
+          };
+        } else {
+          return {
+            success: true,
+            data: {
+              status: true,
+              result: {
+                wm: host + data.data.wmplay,
+                audio: host + data.data.music,
+                video: host + data.data.play,
+                author: data.data.author.nickname,
+                title: data.data.title
+              }
+            }
+          };
+        }
+      } catch (error) {
+        console.error('TikTok API error:', error);
+        return {
+          success: false,
+          data: null,
+          message: error instanceof Error ? error.message : 'TikTok API error'
+        };
+      }
+    }
+
+    // Handle other platforms with existing API
     const API_KEY = "beta-arisenine";
     const BASE_API_URL = "https://api.betabotz.eu.org/api/download/";
     
-    // Map platform and type to API path
     const apiPathMap: Record<string, string> = {
-      'tiktok-video': 'tiktok',
-      'tiktok-slide': 'ttslide',
       'instagram-post': 'igdowloader',
       'instagram-story': 'igdowloader',
       'instagram-reels': 'igdowloader',
