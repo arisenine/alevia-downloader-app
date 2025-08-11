@@ -4,23 +4,29 @@ interface DownloadRequest {
   url: string;
   platform: string;
   type: string;
+  priority?: 'low' | 'normal' | 'high';
 }
 
 interface DownloadResponse {
   success: boolean;
   data: any;
   message?: string;
+  downloadId?: string;
+  estimatedSize?: number;
+  quality?: string;
 }
 
 // Downloads content from various platforms
 export const download = api<DownloadRequest, DownloadResponse>(
   { expose: true, method: "POST", path: "/download" },
   async (req) => {
-    const { url, platform, type } = req;
+    const { url, platform, type, priority = 'normal' } = req;
     
     if (!url || !platform || !type) {
       throw APIError.invalidArgument("URL, platform, and type are required");
     }
+
+    const downloadId = `dl_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Handle TikTok with custom API
     if (platform === 'tiktok') {
@@ -48,6 +54,7 @@ export const download = api<DownloadRequest, DownloadResponse>(
         if (type === 'slide') {
           return {
             success: true,
+            downloadId,
             data: {
               status: true,
               result: {
@@ -56,11 +63,14 @@ export const download = api<DownloadRequest, DownloadResponse>(
                 author: data.data.author.nickname,
                 title: data.data.title
               }
-            }
+            },
+            estimatedSize: data.data.images?.length * 500000, // Estimate 500KB per image
+            quality: 'HD'
           };
         } else {
           return {
             success: true,
+            downloadId,
             data: {
               status: true,
               result: {
@@ -70,13 +80,16 @@ export const download = api<DownloadRequest, DownloadResponse>(
                 author: data.data.author.nickname,
                 title: data.data.title
               }
-            }
+            },
+            estimatedSize: data.data.size || 5000000, // Estimate 5MB
+            quality: data.data.hd ? 'HD' : 'SD'
           };
         }
       } catch (error) {
         console.error('TikTok API error:', error);
         return {
           success: false,
+          downloadId,
           data: null,
           message: error instanceof Error ? error.message : 'TikTok API error'
         };
@@ -119,14 +132,30 @@ export const download = api<DownloadRequest, DownloadResponse>(
         throw new Error(`API Error: ${response.status}`);
       }
 
+      // Estimate file size and quality based on platform and type
+      let estimatedSize = 1000000; // Default 1MB
+      let quality = 'SD';
+
+      if (platform === 'youtube') {
+        estimatedSize = type.includes('mp4') ? 10000000 : 3000000; // 10MB for video, 3MB for audio
+        quality = 'HD';
+      } else if (platform === 'instagram') {
+        estimatedSize = 2000000; // 2MB
+        quality = 'HD';
+      }
+
       return {
         success: true,
-        data: data
+        downloadId,
+        data: data,
+        estimatedSize,
+        quality
       };
     } catch (error) {
       console.error('Download error:', error);
       return {
         success: false,
+        downloadId,
         data: null,
         message: error instanceof Error ? error.message : 'Unknown error occurred'
       };

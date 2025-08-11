@@ -30,34 +30,34 @@ const WelcomeView = React.memo(() => {
   }, [history, preferences]);
 
   const features = useMemo(() => [
-    { icon: Download, title: 'Multi-Platform', desc: 'Support 10+ platform populer', color: 'bg-blue-600', iconColor: 'text-blue-600' },
-    { icon: Zap, title: 'Lightning Fast', desc: 'Download dalam hitungan detik', color: 'bg-orange-500', iconColor: 'text-orange-600' },
-    { icon: Shield, title: 'Secure & Safe', desc: 'Aman dan terpercaya 100%', color: 'bg-green-600', iconColor: 'text-green-600' },
-    { icon: Star, title: 'Premium Free', desc: 'Gratis selamanya tanpa batas', color: 'bg-purple-600', iconColor: 'text-purple-600' }
+    { icon: Download, title: 'Multi-Platform', desc: 'Support 10+ popular platforms', color: 'bg-yellow-500', iconColor: 'text-yellow-600' },
+    { icon: Zap, title: 'Lightning Fast', desc: 'Download in seconds', color: 'bg-orange-500', iconColor: 'text-orange-600' },
+    { icon: Shield, title: 'Secure & Safe', desc: '100% safe and trusted', color: 'bg-green-500', iconColor: 'text-green-600' },
+    { icon: Star, title: 'Premium Free', desc: 'Free forever without limits', color: 'bg-purple-500', iconColor: 'text-purple-600' }
   ], []);
 
   const displayStats = useMemo(() => [
-    { icon: Users, value: stats.users, label: 'Happy Users', color: 'bg-blue-600', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
-    { icon: Download, value: stats.downloads, label: 'Downloads', color: 'bg-green-600', bgColor: 'bg-green-50 dark:bg-green-900/20' },
-    { icon: TrendingUp, value: stats.successRate, label: 'Success Rate', color: 'bg-purple-600', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
-    { icon: Clock, value: stats.availability, label: 'Available', color: 'bg-orange-600', bgColor: 'bg-orange-50 dark:bg-orange-900/20' }
+    { icon: Users, value: stats.users, label: 'Happy Users', color: 'bg-yellow-500', bgColor: 'bg-yellow-50 dark:bg-yellow-900/20' },
+    { icon: Download, value: stats.downloads, label: 'Downloads', color: 'bg-green-500', bgColor: 'bg-green-50 dark:bg-green-900/20' },
+    { icon: TrendingUp, value: stats.successRate, label: 'Success Rate', color: 'bg-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
+    { icon: Clock, value: stats.availability, label: 'Available', color: 'bg-orange-500', bgColor: 'bg-orange-50 dark:bg-orange-900/20' }
   ], [stats]);
 
   const platforms = useMemo(() => [
-    { name: 'TikTok', icon: 'fab fa-tiktok', color: 'bg-pink-600', bgColor: 'bg-pink-50 dark:bg-pink-900/20' },
-    { name: 'Instagram', icon: 'fab fa-instagram', color: 'bg-purple-600', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
-    { name: 'YouTube', icon: 'fab fa-youtube', color: 'bg-red-600', bgColor: 'bg-red-50 dark:bg-red-900/20' },
+    { name: 'TikTok', icon: 'fab fa-tiktok', color: 'bg-pink-500', bgColor: 'bg-pink-50 dark:bg-pink-900/20' },
+    { name: 'Instagram', icon: 'fab fa-instagram', color: 'bg-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
+    { name: 'YouTube', icon: 'fab fa-youtube', color: 'bg-red-500', bgColor: 'bg-red-50 dark:bg-red-900/20' },
     { name: 'Twitter', icon: 'fab fa-twitter', color: 'bg-blue-500', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
-    { name: 'Facebook', icon: 'fab fa-facebook', color: 'bg-blue-700', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
-    { name: 'Spotify', icon: 'fab fa-spotify', color: 'bg-green-600', bgColor: 'bg-green-50 dark:bg-green-900/20' },
-    { name: 'Pinterest', icon: 'fab fa-pinterest', color: 'bg-red-600', bgColor: 'bg-red-50 dark:bg-red-900/20' },
-    { name: 'Threads', icon: 'fab fa-threads', color: 'bg-gray-700 dark:bg-gray-300', bgColor: 'bg-gray-50 dark:bg-gray-800/20' }
+    { name: 'Facebook', icon: 'fab fa-facebook', color: 'bg-blue-600', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
+    { name: 'Spotify', icon: 'fab fa-spotify', color: 'bg-green-500', bgColor: 'bg-green-50 dark:bg-green-900/20' },
+    { name: 'Pinterest', icon: 'fab fa-pinterest', color: 'bg-red-500', bgColor: 'bg-red-50 dark:bg-red-900/20' },
+    { name: 'Threads', icon: 'fab fa-threads', color: 'bg-gray-600 dark:bg-gray-300', bgColor: 'bg-gray-50 dark:bg-gray-800/20' }
   ], []);
 
   if (isLoading) {
     return (
       <div className="space-y-8">
-        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl p-8 lg:p-12 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl border border-yellow-200 dark:border-gray-700 shadow-2xl p-8 lg:p-12 text-center">
           <div className="w-20 h-20 mx-auto mb-8 bg-gray-300 dark:bg-gray-600 rounded-3xl animate-pulse"></div>
           <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-6 animate-pulse"></div>
           <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-full max-w-3xl mx-auto mb-4 animate-pulse"></div>
@@ -70,7 +70,7 @@ const WelcomeView = React.memo(() => {
           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="p-6 bg-white/80 dark:bg-gray-700/80 rounded-2xl">
+              <div key={i} className="p-6 bg-white dark:bg-gray-700 rounded-2xl">
                 <div className="w-12 h-12 mx-auto mb-4 bg-gray-300 dark:bg-gray-600 rounded-xl animate-pulse"></div>
                 <div className="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-2 animate-pulse"></div>
                 <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full animate-pulse"></div>
@@ -85,14 +85,9 @@ const WelcomeView = React.memo(() => {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl shadow-black/10 p-8 lg:p-12 text-center overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-slate-50/50 dark:bg-slate-900/10"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.05),transparent_50%)]"></div>
-        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(147,51,234,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_70%_80%,rgba(147,51,234,0.05),transparent_50%)]"></div>
-        
+      <div className="relative bg-white dark:bg-gray-800 rounded-3xl border border-yellow-200 dark:border-gray-700 shadow-2xl p-8 lg:p-12 text-center overflow-hidden">
         <div className="relative z-10">
-          <div className="w-20 h-20 mx-auto mb-8 bg-blue-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/30">
+          <div className="w-20 h-20 mx-auto mb-8 bg-yellow-500 rounded-3xl flex items-center justify-center shadow-2xl">
             <Sparkles className="w-10 h-10 text-white" />
           </div>
           
@@ -101,23 +96,23 @@ const WelcomeView = React.memo(() => {
           </h2>
           
           <p className="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed font-medium">
-            Platform downloader terlengkap untuk mengunduh video, audio, dan file dari berbagai platform sosial media.
-            <span className="block mt-2 font-bold text-blue-600 dark:text-blue-400">
-              Cepat, mudah, dan gratis selamanya!
+            The most comprehensive downloader platform for downloading videos, audio, and files from various social media platforms.
+            <span className="block mt-2 font-bold text-yellow-600 dark:text-yellow-400">
+              Fast, easy, and free forever!
             </span>
           </p>
 
           {/* Personal Stats */}
           {stats.personalDownloads > 0 && (
-            <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl border border-blue-200/50 dark:border-blue-700/50 max-w-md mx-auto">
+            <div className="mb-8 p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl border border-yellow-200 dark:border-yellow-700 max-w-md mx-auto">
               <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Your Activity</div>
               <div className="flex justify-between items-center">
                 <div className="text-center">
-                  <div className="text-2xl font-black text-blue-600 dark:text-blue-400">{stats.personalDownloads}</div>
+                  <div className="text-2xl font-black text-yellow-600 dark:text-yellow-400">{stats.personalDownloads}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Downloads</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-black text-purple-600 dark:text-purple-400">{stats.personalFavorites}</div>
+                  <div className="text-2xl font-black text-orange-600 dark:text-orange-400">{stats.personalFavorites}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Favorites</div>
                 </div>
               </div>
@@ -126,14 +121,14 @@ const WelcomeView = React.memo(() => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-200 hover:scale-105">
+            <Button className="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-200 hover:scale-105">
               <Play className="w-5 h-5 mr-2" />
-              Mulai Download
+              Start Download
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button variant="outline" className="border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200">
+            <Button variant="outline" className="border-2 border-gray-300 dark:border-gray-600 hover:border-yellow-500 dark:hover:border-yellow-400 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all duration-200">
               <Sparkles className="w-5 h-5 mr-2" />
-              Lihat Fitur
+              View Features
             </Button>
           </div>
 
@@ -142,7 +137,7 @@ const WelcomeView = React.memo(() => {
             {features.map((feature, index) => (
               <div 
                 key={index}
-                className="group p-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-200"
+                className="group p-6 bg-white dark:bg-gray-700 rounded-2xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 hover:shadow-xl hover:-translate-y-1 transition-all duration-200"
               >
                 <div className={`w-12 h-12 mx-auto mb-4 ${feature.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200`}>
                   <feature.icon className="w-6 h-6 text-white" />
@@ -156,7 +151,7 @@ const WelcomeView = React.memo(() => {
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {displayStats.map((stat, index) => (
-              <div key={index} className={`text-center p-6 ${stat.bgColor} backdrop-blur-sm rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 transition-all duration-200 shadow-lg`}>
+              <div key={index} className={`text-center p-6 ${stat.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 transition-all duration-200 shadow-lg`}>
                 <div className={`w-10 h-10 mx-auto mb-3 ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
                   <stat.icon className="w-5 h-5 text-white" />
                 </div>
@@ -169,13 +164,13 @@ const WelcomeView = React.memo(() => {
       </div>
 
       {/* Supported Platforms */}
-      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl shadow-black/5 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl border border-yellow-200 dark:border-gray-700 shadow-xl p-8">
         <div className="text-center mb-8">
           <h3 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-            Platform yang Didukung
+            Supported Platforms
           </h3>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            Download dari platform favorit Anda dengan satu klik
+            Download from your favorite platforms with one click
           </p>
         </div>
         
@@ -183,7 +178,7 @@ const WelcomeView = React.memo(() => {
           {platforms.map((platform, index) => (
             <div 
               key={index}
-              className={`group text-center p-6 ${platform.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 hover:shadow-xl hover:shadow-black/10 transition-all duration-200 cursor-pointer`}
+              className={`group text-center p-6 ${platform.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer`}
             >
               <div className={`w-14 h-14 mx-auto mb-4 ${platform.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200`}>
                 <i className={`${platform.icon} text-xl text-white`}></i>
@@ -196,9 +191,9 @@ const WelcomeView = React.memo(() => {
         </div>
         
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-2xl font-semibold shadow-lg shadow-green-500/30">
+          <div className="inline-flex items-center space-x-2 px-6 py-3 bg-green-500 text-white rounded-2xl font-semibold shadow-lg">
             <Star className="w-5 h-5 fill-current" />
-            <span>Dan masih banyak lagi yang akan datang!</span>
+            <span>And many more coming soon!</span>
           </div>
         </div>
       </div>

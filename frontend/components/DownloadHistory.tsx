@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { History, Trash2, Star, StarOff, ExternalLink, Calendar, X, Download, CheckCircle, XCircle } from 'lucide-react';
+import { History, Trash2, Star, StarOff, ExternalLink, Calendar, X, Download, CheckCircle, XCircle, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -116,18 +116,18 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
-        <div className="flex items-center justify-between p-8 border-b border-gray-200/50 dark:border-gray-700/50">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl border border-yellow-200 dark:border-gray-700 shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+        <div className="flex items-center justify-between p-8 border-b border-yellow-200 dark:border-gray-700">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <div className="w-12 h-12 bg-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
               <History className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Riwayat Download
+                Download History
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Kelola dan lihat riwayat download Anda
+                Manage and view your download history
               </p>
             </div>
           </div>
@@ -139,20 +139,21 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
         <div className="p-8 space-y-6">
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
-                placeholder="Cari URL atau judul..."
+                placeholder="Search URL or title..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-12 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border-2 border-gray-200 dark:border-gray-600 rounded-2xl text-base"
+                className="w-full h-12 pl-10 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-2xl text-base"
               />
             </div>
             <Select value={filterPlatform} onValueChange={setFilterPlatform}>
-              <SelectTrigger className="w-full sm:w-48 h-12 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border-2 border-gray-200 dark:border-gray-600 rounded-2xl">
+              <SelectTrigger className="w-full sm:w-48 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-2xl">
                 <SelectValue placeholder="Platform" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua Platform</SelectItem>
+                <SelectItem value="all">All Platforms</SelectItem>
                 {platformData.map(platform => (
                   <SelectItem key={platform.id} value={platform.id}>
                     {platform.name}
@@ -161,42 +162,42 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
               </SelectContent>
             </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full sm:w-40 h-12 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm border-2 border-gray-200 dark:border-gray-600 rounded-2xl">
+              <SelectTrigger className="w-full sm:w-40 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-2xl">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Semua</SelectItem>
-                <SelectItem value="success">Berhasil</SelectItem>
-                <SelectItem value="failed">Gagal</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="success">Successful</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 text-center border border-blue-200/50 dark:border-blue-700/50">
-              <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-4 text-center border border-yellow-200 dark:border-yellow-700">
+              <div className="text-2xl font-black text-yellow-600 dark:text-yellow-400">
                 {stats.total}
               </div>
-              <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Total</div>
+              <div className="text-sm font-medium text-yellow-700 dark:text-yellow-300">Total</div>
             </div>
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 text-center border border-green-200/50 dark:border-green-700/50">
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 text-center border border-green-200 dark:border-green-700">
               <div className="text-2xl font-black text-green-600 dark:text-green-400">
                 {stats.successful}
               </div>
-              <div className="text-sm font-medium text-green-700 dark:text-green-300">Berhasil</div>
+              <div className="text-sm font-medium text-green-700 dark:text-green-300">Successful</div>
             </div>
-            <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 text-center border border-red-200/50 dark:border-red-700/50">
+            <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 text-center border border-red-200 dark:border-red-700">
               <div className="text-2xl font-black text-red-600 dark:text-red-400">
                 {stats.failed}
               </div>
-              <div className="text-sm font-medium text-red-700 dark:text-red-300">Gagal</div>
+              <div className="text-sm font-medium text-red-700 dark:text-red-300">Failed</div>
             </div>
-            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-4 text-center border border-purple-200/50 dark:border-purple-700/50">
-              <div className="text-2xl font-black text-purple-600 dark:text-purple-400">
+            <div className="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-4 text-center border border-orange-200 dark:border-orange-700">
+              <div className="text-2xl font-black text-orange-600 dark:text-orange-400">
                 {stats.favorites}
               </div>
-              <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Favorit</div>
+              <div className="text-sm font-medium text-orange-700 dark:text-orange-300">Favorites</div>
             </div>
           </div>
 
@@ -204,7 +205,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="p-4 bg-white/50 dark:bg-gray-700/50 rounded-2xl border border-gray-200/50 dark:border-gray-600/50 animate-pulse">
+                <div key={i} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-2xl border border-gray-200 dark:border-gray-600 animate-pulse">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4 flex-1">
                       <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl"></div>
@@ -224,20 +225,20 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
             ) : filteredHistory.length === 0 ? (
               <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                 <History className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p className="text-xl font-medium mb-2">Tidak ada riwayat download ditemukan</p>
-                <p className="text-sm">Mulai download untuk melihat riwayat di sini</p>
+                <p className="text-xl font-medium mb-2">No download history found</p>
+                <p className="text-sm">Start downloading to see history here</p>
               </div>
             ) : (
               filteredHistory.map((item) => (
                 <div 
                   key={item.id}
-                  className="flex items-center justify-between p-4 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-lg hover:shadow-black/10 transition-all duration-200"
+                  className="flex items-center justify-between p-4 bg-white dark:bg-gray-700 rounded-2xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 hover:shadow-lg transition-all duration-200"
                 >
                   <div className="flex items-center space-x-4 flex-1 min-w-0">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${
                       item.success 
-                        ? 'bg-green-600 shadow-green-500/30' 
-                        : 'bg-red-600 shadow-red-500/30'
+                        ? 'bg-green-500' 
+                        : 'bg-red-500'
                     }`}>
                       <i className={`${getPlatformIcon(item.platform)} text-lg text-white`}></i>
                     </div>
@@ -262,8 +263,8 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
                       size="sm"
                       onClick={() => handleRedownload(item)}
                       disabled={redownloadMutation.isPending}
-                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 w-10 h-10 p-0 rounded-xl"
-                      title="Unduh Ulang"
+                      className="text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 w-10 h-10 p-0 rounded-xl"
+                      title="Re-download"
                     >
                       <Download className="w-4 h-4" />
                     </Button>
@@ -272,7 +273,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
                       size="sm"
                       onClick={() => handleToggleFavorite(item.platform)}
                       className="text-gray-400 hover:text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 w-10 h-10 p-0 rounded-xl"
-                      title="Toggle Favorit"
+                      title="Toggle Favorite"
                     >
                       {preferences.favoritePlatforms.includes(item.platform) ? (
                         <Star className="w-4 h-4 fill-current text-yellow-500" />
@@ -285,7 +286,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200"
-                      title="Buka URL"
+                      title="Open URL"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </a>
@@ -294,7 +295,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
                       size="sm"
                       onClick={() => handleRemoveItem(item.id)}
                       className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 w-10 h-10 p-0 rounded-xl"
-                      title="Hapus dari Riwayat"
+                      title="Remove from History"
                     >
                       <X className="w-4 h-4" />
                     </Button>
@@ -305,7 +306,7 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
           </div>
 
           {/* Actions */}
-          <div className="flex justify-between items-center pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+          <div className="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-gray-700">
             <Button
               variant="outline"
               onClick={handleClearHistory}
@@ -313,10 +314,10 @@ const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
               className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl px-6 py-3 font-semibold"
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              Hapus Semua
+              Clear All
             </Button>
             <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-              Menampilkan {filteredHistory.length} dari {history.length} item
+              Showing {filteredHistory.length} of {history.length} items
             </div>
           </div>
         </div>

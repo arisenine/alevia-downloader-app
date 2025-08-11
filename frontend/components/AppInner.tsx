@@ -4,6 +4,8 @@ import Sidebar from './Sidebar';
 import MainContent from './MainContent';
 import WhatsAppFab from './WhatsAppFab';
 import DownloadHistory from './DownloadHistory';
+import DownloadQueue from './DownloadQueue';
+import DownloadAnalytics from './DownloadAnalytics';
 import Footer from './Footer';
 import ErrorBoundary from './ErrorBoundary';
 import { platformData } from '../data/platforms';
@@ -33,6 +35,8 @@ const AppInner = React.memo(() => {
   const [currentCategory, setCurrentCategory] = useState<Platform | null>(null);
   const [currentDownloader, setCurrentDownloader] = useState<Downloader | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [showQueue, setShowQueue] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const preferences = useMemo(() => getUserPreferences(), []);
 
@@ -77,11 +81,29 @@ const AppInner = React.memo(() => {
     setShowHistory(false);
   }, []);
 
+  const handleShowQueue = useCallback(() => {
+    setShowQueue(true);
+  }, []);
+
+  const handleCloseQueue = useCallback(() => {
+    setShowQueue(false);
+  }, []);
+
+  const handleShowAnalytics = useCallback(() => {
+    setShowAnalytics(true);
+  }, []);
+
+  const handleCloseAnalytics = useCallback(() => {
+    setShowAnalytics(false);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-900 flex flex-col">
+    <div className="min-h-screen bg-yellow-50 dark:bg-gray-900 flex flex-col">
       <Header 
         onHomeClick={handleBackToHome} 
         onHistoryClick={handleShowHistory}
+        onQueueClick={handleShowQueue}
+        onAnalyticsClick={handleShowAnalytics}
       />
       
       <div className="flex-1">
@@ -114,6 +136,14 @@ const AppInner = React.memo(() => {
       
       {showHistory && (
         <DownloadHistory onClose={handleCloseHistory} />
+      )}
+      
+      {showQueue && (
+        <DownloadQueue onClose={handleCloseQueue} />
+      )}
+      
+      {showAnalytics && (
+        <DownloadAnalytics onClose={handleCloseAnalytics} />
       )}
     </div>
   );

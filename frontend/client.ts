@@ -83,6 +83,10 @@ export interface ClientOptions {
  * Import the endpoint handlers to derive the types for the client.
  */
 import { download as api_downloader_download_download } from "~backend/downloader/download";
+import {
+    cancelDownload as api_downloader_progress_cancelDownload,
+    getProgress as api_downloader_progress_getProgress
+} from "~backend/downloader/progress";
 
 export namespace downloader {
 
@@ -91,7 +95,18 @@ export namespace downloader {
 
         constructor(baseClient: BaseClient) {
             this.baseClient = baseClient
+            this.cancelDownload = this.cancelDownload.bind(this)
             this.download = this.download.bind(this)
+            this.getProgress = this.getProgress.bind(this)
+        }
+
+        /**
+         * Cancel download
+         */
+        public async cancelDownload(params: { downloadId: string }): Promise<ResponseType<typeof api_downloader_progress_cancelDownload>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/download/${encodeURIComponent(params.downloadId)}/cancel`, {method: "POST", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_downloader_progress_cancelDownload>
         }
 
         /**
@@ -101,6 +116,15 @@ export namespace downloader {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/download`, {method: "POST", body: JSON.stringify(params)})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_downloader_download_download>
+        }
+
+        /**
+         * Get download progress
+         */
+        public async getProgress(params: { downloadId: string }): Promise<ResponseType<typeof api_downloader_progress_getProgress>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/download/${encodeURIComponent(params.downloadId)}/progress`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_downloader_progress_getProgress>
         }
     }
 }
