@@ -1,8 +1,9 @@
-import React from 'react';
-import { ArrowLeft, Home, Zap, Shield, Star, Sparkles, ArrowRight, Download } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ArrowLeft, Home, Zap, Shield, Star, Sparkles, ArrowRight, Download, Clock } from 'lucide-react';
 import { Platform, Downloader } from '../AppInner';
 import { Button } from '@/components/ui/button';
 import { DownloaderCardSkeleton } from '../SkeletonLoader';
+import { getDownloadHistory } from '../../utils/storage';
 
 interface PlatformListViewProps {
   platform: Platform;
@@ -11,12 +12,29 @@ interface PlatformListViewProps {
 }
 
 const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownloaderSelect, onBackToHome }) => {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const history = getDownloadHistory();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 300);
     return () => clearTimeout(timer);
   }, []);
+
+  const downloaderStats = useMemo(() => {
+    const stats: Record<string, { count: number; lastUsed: number }> = {};
+    
+    history
+      .filter(item => item.platform === platform.id)
+      .forEach(item => {
+        if (!stats[item.downloader]) {
+          stats[item.downloader] = { count: 0, lastUsed: 0 };
+        }
+        stats[item.downloader].count++;
+        stats[item.downloader].lastUsed = Math.max(stats[item.downloader].lastUsed, item.timestamp);
+      });
+    
+    return stats;
+  }, [history, platform.id]);
 
   const features = [
     { icon: Zap, text: 'Lightning Fast', color: 'text-orange-500', bgColor: 'bg-orange-50 dark:bg-orange-900/20' },
@@ -74,37 +92,58 @@ const PlatformListView = React.memo<PlatformListViewProps>(({ platform, onDownlo
                 <DownloaderCardSkeleton key={i} />
               ))
             ) : (
-              platform.downloaders.map((downloader, index) => (
-                <div
-                  key={downloader.id}
-                  className="group cursor-pointer p-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden relative"
-                  onClick={() => onDownloaderSelect(downloader)}
-                >
-                  {/* Background Gradient */}
-                  <div className="absolute inset-0 bg-blue-50/0 group-hover:bg-blue-50/50 dark:group-hover:bg-blue-900/20 transition-all duration-300"></div>
-                  
-                  <div className="relative z-10">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-500/30 group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-blue-500/40 transition-all duration-300">
-                        <i className={`${platform.icon} text-xl`}></i>
+              platform.downloaders.map((downloader, index) => {
+                const stats = downloaderStats[downloader.id];
+                const isRecentlyUsed = stats && (Date.now() - stats.lastUsed) < (7 * 24 * 60 * 60 * 1000);
+                
+                return (
+                  <div
+                    key={downloader.id}
+                    className="group cursor-pointer p-6 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden relative"
+                    onClick={() => onDownloaderSelect(downloader)}
+                  >
+                    {/* Background Gradient */}
+                    <div className="absolute inset-0 bg-blue-50/0 group-hover:bg-blue-50/50 dark:group-hover:bg-blue-900/20 transition-all duration-300"></div>
+                    
+                    {/* Recently Used Badge */}
+                    {isRecentlyUsed && (
+                      <div className="absolute top-4 right-4 flex items-center space-x-1 px-2 py-1 bg-green-500 text-white text-xs font-semibold rounded-full">
+                        <Clock className="w-3 h-3" />
+                        <span>Recent</span>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {downloader.name}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed">
-                          {downloader.instructions}
-                        </p>
-                        <div className="flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                          <Download className="w-4 h-4 mr-2" />
-                          <span>Pilih Downloader</span>
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    )}
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-500/30 group-hover:scale-110 group-hover:shadow-2xl group-hover:shadow-blue-500/40 transition-all duration-300">
+                          <i className={`${platform.icon} text-xl`}></i>
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {downloader.name}
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed">
+                            {downloader.instructions}
+                          </p>
+                          
+                          {/* Usage Stats */}
+                          {stats && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                              Digunakan {stats.count} kali
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                            <Download className="w-4 h-4 mr-2" />
+                            <span>Pilih Downloader</span>
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 

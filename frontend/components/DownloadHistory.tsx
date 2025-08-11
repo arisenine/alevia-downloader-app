@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
-import { History, Trash2, Star, StarOff, ExternalLink, Calendar, Filter, X, Download, Sparkles } from 'lucide-react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { History, Trash2, Star, StarOff, ExternalLink, Calendar, Filter, X, Download, Sparkles, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getDownloadHistory, clearDownloadHistory, toggleFavoritePlatform, getUserPreferences } from '../utils/storage';
+import { getDownloadHistory, clearDownloadHistory, toggleFavoritePlatform, getUserPreferences, removeFromDownloadHistory } from '../utils/storage';
 import { HistoryItemSkeleton } from './SkeletonLoader';
 import { platformData } from '../data/platforms';
 import { useMutation } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ interface DownloadHistoryProps {
   onClose: () => void;
 }
 
-export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
+const DownloadHistory = React.memo<DownloadHistoryProps>(({ onClose }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlatform, setFilterPlatform] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
@@ -60,31 +60,44 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
     });
   }, [history, searchTerm, filterPlatform, filterStatus]);
 
-  const handleClearHistory = async () => {
+  const stats = useMemo(() => ({
+    total: history.length,
+    successful: history.filter(h => h.success).length,
+    failed: history.filter(h => !h.success).length,
+    favorites: preferences.favoritePlatforms.length
+  }), [history, preferences.favoritePlatforms]);
+
+  const handleClearHistory = useCallback(async () => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 500));
     clearDownloadHistory();
     setIsLoading(false);
-  };
+    showSuccessToast("Riwayat berhasil dihapus");
+  }, []);
 
-  const handleToggleFavorite = (platformId: string) => {
+  const handleToggleFavorite = useCallback((platformId: string) => {
     toggleFavoritePlatform(platformId);
-  };
+  }, []);
 
-  const handleRedownload = (item: any) => {
+  const handleRedownload = useCallback((item: any) => {
     redownloadMutation.mutate({
       url: item.url,
       platform: item.platform,
       downloader: item.downloader
     });
-  };
+  }, [redownloadMutation]);
 
-  const getPlatformIcon = (platformId: string) => {
+  const handleRemoveItem = useCallback((itemId: string) => {
+    removeFromDownloadHistory(itemId);
+    showSuccessToast("Item berhasil dihapus dari riwayat");
+  }, []);
+
+  const getPlatformIcon = useCallback((platformId: string) => {
     const platform = platformData.find(p => p.id === platformId);
     return platform?.icon || 'fas fa-globe';
-  };
+  }, []);
 
-  const formatDate = (timestamp: number) => {
+  const formatDate = useCallback((timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('id-ID', {
       day: 'numeric',
       month: 'short',
@@ -92,7 +105,15 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
+  }, []);
+
+  const getStatusIcon = useCallback((success: boolean) => {
+    return success ? (
+      <CheckCircle className="w-4 h-4 text-green-500" />
+    ) : (
+      <XCircle className="w-4 h-4 text-red-500" />
+    );
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -156,25 +177,25 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 text-center border border-blue-200/50 dark:border-blue-700/50">
               <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
-                {history.length}
+                {stats.total}
               </div>
               <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Total</div>
             </div>
             <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 text-center border border-green-200/50 dark:border-green-700/50">
               <div className="text-2xl font-black text-green-600 dark:text-green-400">
-                {history.filter(h => h.success).length}
+                {stats.successful}
               </div>
               <div className="text-sm font-medium text-green-700 dark:text-green-300">Berhasil</div>
             </div>
             <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 text-center border border-red-200/50 dark:border-red-700/50">
               <div className="text-2xl font-black text-red-600 dark:text-red-400">
-                {history.filter(h => !h.success).length}
+                {stats.failed}
               </div>
               <div className="text-sm font-medium text-red-700 dark:text-red-300">Gagal</div>
             </div>
             <div className="bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-4 text-center border border-purple-200/50 dark:border-purple-700/50">
               <div className="text-2xl font-black text-purple-600 dark:text-purple-400">
-                {preferences.favoritePlatforms.length}
+                {stats.favorites}
               </div>
               <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Favorit</div>
             </div>
@@ -207,8 +228,11 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
                       <i className={`${getPlatformIcon(item.platform)} text-lg text-white`}></i>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-base font-semibold text-gray-900 dark:text-white truncate">
-                        {item.title || item.url}
+                      <div className="flex items-center space-x-2 mb-1">
+                        <div className="text-base font-semibold text-gray-900 dark:text-white truncate">
+                          {item.title || item.url}
+                        </div>
+                        {getStatusIcon(item.success)}
                       </div>
                       <div className="flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
                         <Calendar className="w-4 h-4" />
@@ -251,6 +275,15 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
                     >
                       <ExternalLink className="w-4 h-4" />
                     </a>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveItem(item.id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 w-10 h-10 p-0 rounded-xl"
+                      title="Hapus dari Riwayat"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               ))
@@ -276,4 +309,8 @@ export default function DownloadHistory({ onClose }: DownloadHistoryProps) {
       </div>
     </div>
   );
-}
+});
+
+DownloadHistory.displayName = 'DownloadHistory';
+
+export default DownloadHistory;

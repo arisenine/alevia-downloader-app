@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Download, Zap, Shield, Star, TrendingUp, Users, Clock, Sparkles, ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getDownloadHistory, getUserPreferences } from '../../utils/storage';
+import { WelcomeViewSkeleton } from '../SkeletonLoader';
 
 const WelcomeView = React.memo(() => {
+  const [isLoading, setIsLoading] = useState(true);
+  const history = getDownloadHistory();
+  const preferences = getUserPreferences();
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const stats = useMemo(() => {
+    const totalDownloads = history.length;
+    const successfulDownloads = history.filter(h => h.success).length;
+    const successRate = totalDownloads > 0 ? (successfulDownloads / totalDownloads) * 100 : 99.9;
+    const favoritePlatforms = preferences.favoritePlatforms.length;
+
+    return {
+      users: '50K+',
+      downloads: totalDownloads > 0 ? `${totalDownloads}+` : '1M+',
+      successRate: `${successRate.toFixed(1)}%`,
+      availability: '24/7',
+      personalDownloads: totalDownloads,
+      personalFavorites: favoritePlatforms
+    };
+  }, [history, preferences]);
+
   const features = [
     { icon: Download, title: 'Multi-Platform', desc: 'Support 10+ platform populer', color: 'bg-blue-600', iconColor: 'text-blue-600' },
     { icon: Zap, title: 'Lightning Fast', desc: 'Download dalam hitungan detik', color: 'bg-orange-500', iconColor: 'text-orange-600' },
@@ -10,11 +37,11 @@ const WelcomeView = React.memo(() => {
     { icon: Star, title: 'Premium Free', desc: 'Gratis selamanya tanpa batas', color: 'bg-purple-600', iconColor: 'text-purple-600' }
   ];
 
-  const stats = [
-    { icon: Users, value: '50K+', label: 'Happy Users', color: 'bg-blue-600', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
-    { icon: Download, value: '1M+', label: 'Downloads', color: 'bg-green-600', bgColor: 'bg-green-50 dark:bg-green-900/20' },
-    { icon: TrendingUp, value: '99.9%', label: 'Success Rate', color: 'bg-purple-600', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
-    { icon: Clock, value: '24/7', label: 'Available', color: 'bg-orange-600', bgColor: 'bg-orange-50 dark:bg-orange-900/20' }
+  const displayStats = [
+    { icon: Users, value: stats.users, label: 'Happy Users', color: 'bg-blue-600', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
+    { icon: Download, value: stats.downloads, label: 'Downloads', color: 'bg-green-600', bgColor: 'bg-green-50 dark:bg-green-900/20' },
+    { icon: TrendingUp, value: stats.successRate, label: 'Success Rate', color: 'bg-purple-600', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
+    { icon: Clock, value: stats.availability, label: 'Available', color: 'bg-orange-600', bgColor: 'bg-orange-50 dark:bg-orange-900/20' }
   ];
 
   const platforms = [
@@ -27,6 +54,10 @@ const WelcomeView = React.memo(() => {
     { name: 'Pinterest', icon: 'fab fa-pinterest', color: 'bg-red-600', bgColor: 'bg-red-50 dark:bg-red-900/20' },
     { name: 'Threads', icon: 'fab fa-threads', color: 'bg-gray-700 dark:bg-gray-300', bgColor: 'bg-gray-50 dark:bg-gray-800/20' }
   ];
+
+  if (isLoading) {
+    return <WelcomeViewSkeleton />;
+  }
 
   return (
     <div className="space-y-8">
@@ -52,6 +83,23 @@ const WelcomeView = React.memo(() => {
               Cepat, mudah, dan gratis selamanya!
             </span>
           </p>
+
+          {/* Personal Stats */}
+          {stats.personalDownloads > 0 && (
+            <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl border border-blue-200/50 dark:border-blue-700/50 max-w-md mx-auto">
+              <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Your Activity</div>
+              <div className="flex justify-between items-center">
+                <div className="text-center">
+                  <div className="text-2xl font-black text-blue-600 dark:text-blue-400">{stats.personalDownloads}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Downloads</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-black text-purple-600 dark:text-purple-400">{stats.personalFavorites}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Favorites</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -84,7 +132,7 @@ const WelcomeView = React.memo(() => {
 
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {stats.map((stat, index) => (
+            {displayStats.map((stat, index) => (
               <div key={index} className={`text-center p-6 ${stat.bgColor} backdrop-blur-sm rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 transition-all duration-300 shadow-lg`}>
                 <div className={`w-10 h-10 mx-auto mb-3 ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
                   <stat.icon className="w-5 h-5 text-white" />

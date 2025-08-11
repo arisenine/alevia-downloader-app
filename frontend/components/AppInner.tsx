@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
@@ -48,32 +48,32 @@ const AppInner = React.memo(() => {
     });
   }, [preferences.favoritePlatforms]);
 
-  const handlePlatformSelect = React.useCallback((platform: Platform) => {
+  const handlePlatformSelect = useCallback((platform: Platform) => {
     setCurrentCategory(platform);
     setCurrentView('platformList');
   }, []);
 
-  const handleDownloaderSelect = React.useCallback((downloader: Downloader) => {
+  const handleDownloaderSelect = useCallback((downloader: Downloader) => {
     setCurrentDownloader(downloader);
     setCurrentView('downloader');
   }, []);
 
-  const handleBackToHome = React.useCallback(() => {
+  const handleBackToHome = useCallback(() => {
     setCurrentCategory(null);
     setCurrentDownloader(null);
     setCurrentView('welcome');
   }, []);
 
-  const handleBackToPlatforms = React.useCallback(() => {
+  const handleBackToPlatforms = useCallback(() => {
     setCurrentDownloader(null);
     setCurrentView('platformList');
   }, []);
 
-  const handleShowHistory = React.useCallback(() => {
+  const handleShowHistory = useCallback(() => {
     setShowHistory(true);
   }, []);
 
-  const handleCloseHistory = React.useCallback(() => {
+  const handleCloseHistory = useCallback(() => {
     setShowHistory(false);
   }, []);
 

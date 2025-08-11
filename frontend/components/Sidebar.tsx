@@ -1,7 +1,7 @@
-import React from 'react';
-import { Star, Grid3X3, Sparkles, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Star, Grid3X3, Sparkles, TrendingUp, Clock } from 'lucide-react';
 import { Platform } from './AppInner';
-import { getUserPreferences } from '../utils/storage';
+import { getUserPreferences, getDownloadHistory } from '../utils/storage';
 import { PlatformCardSkeleton } from './SkeletonLoader';
 
 interface SidebarProps {
@@ -11,13 +11,35 @@ interface SidebarProps {
 }
 
 const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatformSelect }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const preferences = getUserPreferences();
-  const [isLoading, setIsLoading] = React.useState(true);
+  const history = getDownloadHistory();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(timer);
   }, []);
+
+  const platformStats = useMemo(() => {
+    const stats: Record<string, { count: number; lastUsed: number }> = {};
+    
+    history.forEach(item => {
+      if (!stats[item.platform]) {
+        stats[item.platform] = { count: 0, lastUsed: 0 };
+      }
+      stats[item.platform].count++;
+      stats[item.platform].lastUsed = Math.max(stats[item.platform].lastUsed, item.timestamp);
+    });
+    
+    return stats;
+  }, [history]);
+
+  const getRecentlyUsed = useMemo(() => {
+    const recentThreshold = Date.now() - (7 * 24 * 60 * 60 * 1000); // 7 days
+    return Object.entries(platformStats)
+      .filter(([_, stats]) => stats.lastUsed > recentThreshold)
+      .map(([platformId]) => platformId);
+  }, [platformStats]);
 
   if (isLoading) {
     return (
@@ -59,6 +81,8 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
             {platforms.map((platform) => {
               const isFavorite = preferences.favoritePlatforms.includes(platform.id);
               const isActive = currentCategory?.id === platform.id;
+              const isRecentlyUsed = getRecentlyUsed.includes(platform.id);
+              const stats = platformStats[platform.id];
               
               return (
                 <div
@@ -70,17 +94,24 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
                   }`}
                   onClick={() => onPlatformSelect(platform)}
                 >
-                  {isFavorite && (
-                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg shadow-yellow-500/30 animate-pulse">
-                      <Star className="w-3 h-3 text-white fill-current" />
-                    </div>
-                  )}
-                  
-                  {isActive && (
-                    <div className="absolute top-2 right-2">
-                      <TrendingUp className="w-4 h-4 text-blue-500 dark:text-blue-400" />
-                    </div>
-                  )}
+                  {/* Badges */}
+                  <div className="absolute top-2 right-2 flex space-x-1">
+                    {isFavorite && (
+                      <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg shadow-yellow-500/30">
+                        <Star className="w-3 h-3 text-white fill-current" />
+                      </div>
+                    )}
+                    {isRecentlyUsed && !isFavorite && (
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30">
+                        <Clock className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                    {isActive && (
+                      <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <TrendingUp className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                  </div>
                   
                   <div className="flex items-center space-x-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg ${
@@ -97,6 +128,11 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
                       <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
                         {platform.description}
                       </div>
+                      {stats && (
+                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                          {stats.count} download{stats.count !== 1 ? 's' : ''}
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -114,7 +150,7 @@ const Sidebar = React.memo<SidebarProps>(({ platforms, currentCategory, onPlatfo
               <span className="text-sm font-semibold text-blue-900 dark:text-blue-100">Pro Tip</span>
             </div>
             <p className="text-xs text-blue-700 dark:text-blue-300">
-              Star your favorite platforms for quick access!
+              Star your favorite platforms for quick access! Recently used platforms show a clock icon.
             </p>
           </div>
         </div>
