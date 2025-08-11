@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Zap, Shield, Star, TrendingUp, Users, Clock, Sparkles, ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getDownloadHistory, getUserPreferences } from '../../utils/storage';
@@ -57,23 +58,23 @@ const WelcomeView = React.memo(() => {
   if (isLoading) {
     return (
       <div className="space-y-8">
-        <div className="bg-white dark:bg-gray-800 rounded-3xl border border-yellow-200 dark:border-gray-700 shadow-2xl p-8 lg:p-12 text-center">
-          <div className="w-20 h-20 mx-auto mb-8 bg-gray-300 dark:bg-gray-600 rounded-3xl animate-pulse"></div>
-          <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-6 animate-pulse"></div>
-          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-full max-w-3xl mx-auto mb-4 animate-pulse"></div>
-          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-2/3 max-w-3xl mx-auto mb-8 animate-pulse"></div>
+        <div className="card-enhanced p-8 lg:p-12 text-center">
+          <div className="w-20 h-20 mx-auto mb-8 bg-gray-300 dark:bg-gray-600 rounded-3xl animate-shimmer"></div>
+          <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-6 animate-shimmer"></div>
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-full max-w-3xl mx-auto mb-4 animate-shimmer"></div>
+          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-2/3 max-w-3xl mx-auto mb-8 animate-shimmer"></div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl w-48 animate-pulse"></div>
-            <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl w-48 animate-pulse"></div>
+            <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl w-48 animate-shimmer"></div>
+            <div className="h-12 bg-gray-300 dark:bg-gray-600 rounded-2xl w-48 animate-shimmer"></div>
           </div>
           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="p-6 bg-white dark:bg-gray-700 rounded-2xl">
-                <div className="w-12 h-12 mx-auto mb-4 bg-gray-300 dark:bg-gray-600 rounded-xl animate-pulse"></div>
-                <div className="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-2 animate-pulse"></div>
-                <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full animate-pulse"></div>
+              <div key={i} className="p-6 bg-white/50 dark:bg-gray-700/50 rounded-2xl glass-effect">
+                <div className="w-12 h-12 mx-auto mb-4 bg-gray-300 dark:bg-gray-600 rounded-xl animate-shimmer"></div>
+                <div className="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mx-auto mb-2 animate-shimmer"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full animate-shimmer"></div>
               </div>
             ))}
           </div>
@@ -85,118 +86,308 @@ const WelcomeView = React.memo(() => {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="relative bg-white dark:bg-gray-800 rounded-3xl border border-yellow-200 dark:border-gray-700 shadow-2xl p-8 lg:p-12 text-center overflow-hidden">
+      <motion.div 
+        className="relative card-enhanced p-8 lg:p-12 text-center overflow-hidden"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-50/50 via-orange-50/50 to-red-50/50 dark:from-yellow-900/10 dark:via-orange-900/10 dark:to-red-900/10"></div>
+        <motion.div 
+          className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360]
+          }}
+          transition={{ 
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        <motion.div 
+          className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-pink-400/20 to-yellow-600/20 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0]
+          }}
+          transition={{ 
+            duration: 15,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        
         <div className="relative z-10">
-          <div className="w-20 h-20 mx-auto mb-8 bg-yellow-500 rounded-3xl flex items-center justify-center shadow-2xl">
-            <Sparkles className="w-10 h-10 text-white" />
-          </div>
+          <motion.div 
+            className="w-20 h-20 mx-auto mb-8 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl animate-float"
+            whileHover={{ scale: 1.1, rotate: 360 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            >
+              <Sparkles className="w-10 h-10 text-white" />
+            </motion.div>
+          </motion.div>
           
-          <h2 className="text-4xl lg:text-6xl font-black mb-6 text-gray-900 dark:text-white leading-tight">
+          <motion.h2 
+            className="text-4xl lg:text-6xl font-black mb-6 text-gradient-primary leading-tight"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             Welcome to LevTools
-          </h2>
+          </motion.h2>
           
-          <p className="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed font-medium">
+          <motion.p 
+            className="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed font-medium"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             The most comprehensive downloader platform for downloading videos, audio, and files from various social media platforms.
-            <span className="block mt-2 font-bold text-yellow-600 dark:text-yellow-400">
+            <motion.span 
+              className="block mt-2 font-bold text-gradient-secondary"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
               Fast, easy, and free forever!
-            </span>
-          </p>
+            </motion.span>
+          </motion.p>
 
           {/* Personal Stats */}
           {stats.personalDownloads > 0 && (
-            <div className="mb-8 p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl border border-yellow-200 dark:border-yellow-700 max-w-md mx-auto">
+            <motion.div 
+              className="mb-8 p-6 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl border border-yellow-200/50 dark:border-yellow-700/50 max-w-md mx-auto glass-effect"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              whileHover={{ scale: 1.05 }}
+            >
               <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Your Activity</div>
               <div className="flex justify-between items-center">
                 <div className="text-center">
-                  <div className="text-2xl font-black text-yellow-600 dark:text-yellow-400">{stats.personalDownloads}</div>
+                  <motion.div 
+                    className="text-2xl font-black text-gradient-primary"
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    {stats.personalDownloads}
+                  </motion.div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Downloads</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-black text-orange-600 dark:text-orange-400">{stats.personalFavorites}</div>
+                  <motion.div 
+                    className="text-2xl font-black text-gradient-secondary"
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                  >
+                    {stats.personalFavorites}
+                  </motion.div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Favorites</div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button className="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-200 hover:scale-105">
-              <Play className="w-5 h-5 mr-2" />
-              Start Download
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button variant="outline" className="border-2 border-gray-300 dark:border-gray-600 hover:border-yellow-500 dark:hover:border-yellow-400 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all duration-200">
-              <Sparkles className="w-5 h-5 mr-2" />
-              View Features
-            </Button>
-          </div>
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button className="btn-primary px-8 py-4 text-lg">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                </motion.div>
+                Start Download
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </motion.div>
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button variant="outline" className="btn-secondary px-8 py-4 text-lg">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="w-5 h-5 mr-2" />
+                </motion.div>
+                View Features
+              </Button>
+            </motion.div>
+          </motion.div>
 
           {/* Features Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
+          <motion.div 
+            className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1 }}
+          >
             {features.map((feature, index) => (
-              <div 
+              <motion.div 
                 key={index}
-                className="group p-6 bg-white dark:bg-gray-700 rounded-2xl border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 hover:shadow-xl hover:-translate-y-1 transition-all duration-200"
+                className="group p-6 card-glass hover:bg-white/20 dark:hover:bg-black/20 hover:shadow-2xl hover:-translate-y-2 smooth-transition gpu-accelerated"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.2 + index * 0.1 }}
+                whileHover={{ scale: 1.05, y: -5 }}
               >
-                <div className={`w-12 h-12 mx-auto mb-4 ${feature.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200`}>
+                <motion.div 
+                  className={`w-12 h-12 mx-auto mb-4 bg-gradient-to-br ${feature.color.replace('bg-', 'from-')} to-${feature.color.split('-')[1]}-600 rounded-xl flex items-center justify-center shadow-xl group-hover:scale-125 smooth-transform`}
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
                   <feature.icon className="w-6 h-6 text-white" />
-                </div>
-                <div className="font-bold text-gray-900 dark:text-white text-lg mb-2">{feature.title}</div>
+                </motion.div>
+                <motion.div 
+                  className="font-bold text-gray-900 dark:text-white text-lg mb-2"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {feature.title}
+                </motion.div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <motion.div 
+            className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.4 }}
+          >
             {displayStats.map((stat, index) => (
-              <div key={index} className={`text-center p-6 ${stat.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 transition-all duration-200 shadow-lg`}>
-                <div className={`w-10 h-10 mx-auto mb-3 ${stat.color} rounded-xl flex items-center justify-center shadow-lg`}>
+              <motion.div 
+                key={index} 
+                className={`text-center p-6 ${stat.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-110 smooth-transition shadow-xl hover:shadow-2xl gpu-accelerated`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 1.6 + index * 0.1 }}
+                whileHover={{ scale: 1.1, y: -5 }}
+              >
+                <motion.div 
+                  className={`w-10 h-10 mx-auto mb-3 bg-gradient-to-br ${stat.color.replace('bg-', 'from-')} to-${stat.color.split('-')[1]}-600 rounded-xl flex items-center justify-center shadow-xl`}
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
                   <stat.icon className="w-5 h-5 text-white" />
-                </div>
-                <div className="text-2xl font-black text-gray-900 dark:text-white mb-1">{stat.value}</div>
+                </motion.div>
+                <motion.div 
+                  className="text-2xl font-black text-gray-900 dark:text-white mb-1"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.2 }}
+                >
+                  {stat.value}
+                </motion.div>
                 <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.label}</div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Supported Platforms */}
-      <div className="bg-white dark:bg-gray-800 rounded-3xl border border-yellow-200 dark:border-gray-700 shadow-xl p-8">
+      <motion.div 
+        className="card-enhanced p-8"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      >
         <div className="text-center mb-8">
-          <h3 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+          <motion.h3 
+            className="text-3xl font-bold mb-4 text-gradient-primary"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
             Supported Platforms
-          </h3>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          </motion.h3>
+          <motion.p 
+            className="text-lg text-gray-600 dark:text-gray-400"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+          >
             Download from your favorite platforms with one click
-          </p>
+          </motion.p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        <motion.div 
+          className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.1 }}
+        >
           {platforms.map((platform, index) => (
-            <div 
+            <motion.div 
               key={index}
-              className={`group text-center p-6 ${platform.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer`}
+              className={`group text-center p-6 ${platform.bgColor} rounded-2xl border border-white/50 dark:border-gray-600/30 hover:scale-110 hover:shadow-2xl smooth-transition cursor-pointer gpu-accelerated`}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 1.3 + index * 0.1 }}
+              whileHover={{ scale: 1.1, y: -5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div className={`w-14 h-14 mx-auto mb-4 ${platform.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200`}>
+              <motion.div 
+                className={`w-14 h-14 mx-auto mb-4 bg-gradient-to-br ${platform.color.replace('bg-', 'from-')} to-${platform.color.split('-')[1]}-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-125 smooth-transform`}
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
                 <i className={`${platform.icon} text-xl text-white`}></i>
-              </div>
-              <span className="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+              </motion.div>
+              <motion.span 
+                className="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white smooth-transition"
+                whileHover={{ scale: 1.05 }}
+              >
                 {platform.name}
-              </span>
-            </div>
+              </motion.span>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center space-x-2 px-6 py-3 bg-green-500 text-white rounded-2xl font-semibold shadow-lg">
-            <Star className="w-5 h-5 fill-current" />
+        <motion.div 
+          className="mt-8 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 2 }}
+        >
+          <motion.div 
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-2xl font-semibold shadow-xl hover:shadow-2xl smooth-transition"
+            whileHover={{ scale: 1.05 }}
+            animate={{ y: [0, -5, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            >
+              <Star className="w-5 h-5 fill-current" />
+            </motion.div>
             <span>And many more coming soon!</span>
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 });

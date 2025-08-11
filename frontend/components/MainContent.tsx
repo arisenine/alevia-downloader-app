@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ViewType, Platform, Downloader } from './AppInner';
 import WelcomeView from './views/WelcomeView';
 import PlatformListView from './views/PlatformListView';
@@ -21,27 +22,49 @@ export default function MainContent({
   onBackToHome,
   onBackToPlatforms
 }: MainContentProps) {
+  const pageVariants = {
+    initial: { opacity: 0, x: 50 },
+    in: { opacity: 1, x: 0 },
+    out: { opacity: 0, x: -50 }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.4
+  };
+
   return (
     <main className="lg:col-span-3">
-      <div className="transition-all duration-500 ease-in-out">
-        {currentView === 'welcome' && <WelcomeView />}
-        
-        {currentView === 'platformList' && currentCategory && (
-          <PlatformListView
-            platform={currentCategory}
-            onDownloaderSelect={onDownloaderSelect}
-            onBackToHome={onBackToHome}
-          />
-        )}
-        
-        {currentView === 'downloader' && currentDownloader && currentCategory && (
-          <DownloaderView
-            downloader={currentDownloader}
-            platform={currentCategory}
-            onBackToPlatforms={onBackToPlatforms}
-          />
-        )}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentView}
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+          transition={pageTransition}
+          className="gpu-accelerated"
+        >
+          {currentView === 'welcome' && <WelcomeView />}
+          
+          {currentView === 'platformList' && currentCategory && (
+            <PlatformListView
+              platform={currentCategory}
+              onDownloaderSelect={onDownloaderSelect}
+              onBackToHome={onBackToHome}
+            />
+          )}
+          
+          {currentView === 'downloader' && currentDownloader && currentCategory && (
+            <DownloaderView
+              downloader={currentDownloader}
+              platform={currentCategory}
+              onBackToPlatforms={onBackToPlatforms}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
@@ -97,8 +98,20 @@ const AppInner = React.memo(() => {
     setShowAnalytics(false);
   }, []);
 
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -20 }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.5
+  };
+
   return (
-    <div className="min-h-screen bg-yellow-50 dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col smooth-transition">
       <Header 
         onHomeClick={handleBackToHome} 
         onHistoryClick={handleShowHistory}
@@ -106,45 +119,77 @@ const AppInner = React.memo(() => {
         onAnalyticsClick={handleShowAnalytics}
       />
       
-      <div className="flex-1">
+      <motion.div 
+        className="flex-1"
+        initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}
+        transition={pageTransition}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <ErrorBoundary>
-              <Sidebar 
-                platforms={sortedPlatforms}
-                currentCategory={currentCategory}
-                onPlatformSelect={handlePlatformSelect}
-              />
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <Sidebar 
+                  platforms={sortedPlatforms}
+                  currentCategory={currentCategory}
+                  onPlatformSelect={handlePlatformSelect}
+                />
+              </motion.div>
             </ErrorBoundary>
             
             <ErrorBoundary>
-              <MainContent
-                currentView={currentView}
-                currentCategory={currentCategory}
-                currentDownloader={currentDownloader}
-                onDownloaderSelect={handleDownloaderSelect}
-                onBackToHome={handleBackToHome}
-                onBackToPlatforms={handleBackToPlatforms}
-              />
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <MainContent
+                  currentView={currentView}
+                  currentCategory={currentCategory}
+                  currentDownloader={currentDownloader}
+                  onDownloaderSelect={onDownloaderSelect}
+                  onBackToHome={handleBackToHome}
+                  onBackToPlatforms={handleBackToPlatforms}
+                />
+              </motion.div>
             </ErrorBoundary>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <Footer />
-      <WhatsAppFab />
       
-      {showHistory && (
-        <DownloadHistory onClose={handleCloseHistory} />
-      )}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 1 }}
+      >
+        <WhatsAppFab />
+      </motion.div>
       
-      {showQueue && (
-        <DownloadQueue onClose={handleCloseQueue} />
-      )}
+      <AnimatePresence>
+        {showHistory && (
+          <DownloadHistory onClose={handleCloseHistory} />
+        )}
+      </AnimatePresence>
       
-      {showAnalytics && (
-        <DownloadAnalytics onClose={handleCloseAnalytics} />
-      )}
+      <AnimatePresence>
+        {showQueue && (
+          <DownloadQueue onClose={handleCloseQueue} />
+        )}
+      </AnimatePresence>
+      
+      <AnimatePresence>
+        {showAnalytics && (
+          <DownloadAnalytics onClose={handleCloseAnalytics} />
+        )}
+      </AnimatePresence>
     </div>
   );
 });
